@@ -22,8 +22,6 @@ export interface CategoryFormProps {
   ) => Promise<void>;
 }
 
-export interface CategoryColumnActions {
-  onEdit: (category: Category) => void;
-  onDelete: (categoryId: number) => void;
-  onRestore: (categoryId: number) => void;
+export interface CategoryActionsProps {
+  category: Category;
 }

@@ -23,3 +23,16 @@ export interface EntityDialogFooterProps {
   editLabel?: string;
   editLoadingLabel?: string;
 }
+
+export interface DeleteEntityDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  description: string;
+  entityName?: string;
+  isDeleting?: boolean;
+  errorMessage?: string | null;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  onConfirm: () => Promise<void>;
+}
