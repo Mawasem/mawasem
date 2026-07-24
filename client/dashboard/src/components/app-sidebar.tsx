@@ -13,9 +13,19 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  ChevronRight,
+} from "lucide-react";
+
+
+import { data } from "@/lib/data";
 import { NavLink } from "react-router-dom";
 import { NavUser } from "./nav-user";
-import { data } from "@/lib/data";
 
 
 export function AppSidebar(
@@ -29,27 +39,38 @@ export function AppSidebar(
 
       <SidebarContent>
         {data.map((group) => (
-          <SidebarGroup key={group.key}>
-            <SidebarGroupLabel>
-              {group.key}
-            </SidebarGroupLabel>
+          <Collapsible
+            key={group.key}
+            defaultOpen
+            className="group/collapsible"
+          >
+            <SidebarGroup>
+              <SidebarGroupLabel asChild>
+                <CollapsibleTrigger className="flex w-full items-center justify-between">
+                  <span>{group.key}</span>
 
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.key}>
-                    <SidebarMenuButton asChild>
-                      <NavLink to={item.url}>
-                        <item.icon />
+                  <ChevronRight className="size-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                </CollapsibleTrigger>
+              </SidebarGroupLabel>
 
-                        <span>{item.key}</span>
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+              <CollapsibleContent>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {group.items.map((item) => (
+                      <SidebarMenuItem key={item.key}>
+                        <SidebarMenuButton asChild>
+                          <NavLink to={item.url}>
+                            <item.icon />
+                            <span>{item.key}</span>
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </CollapsibleContent>
+            </SidebarGroup>
+          </Collapsible>
         ))}
       </SidebarContent>
 

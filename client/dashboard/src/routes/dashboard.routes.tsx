@@ -5,6 +5,7 @@ import { ProtectedRoute } from "./protected-route";
 import CategoriesPage from "@/features/categories/pages/CategoriesPage";
 import CollectionsPage from "@/features/collections/pages/CollectionsPage";
 import { BrandsPage } from "@/features/brands/pages/BrandsPage";
+import SeasonsPage from "@/features/seasons/pages/SeasonsPage";
 
 export const dashboardRoutes: RouteObject = {
   path: "/",
@@ -29,6 +30,10 @@ export const dashboardRoutes: RouteObject = {
     {
       path: "collections",
       element: <CollectionsPage />
+    },
+    {
+      path: "seasons",
+      element: <SeasonsPage />
     }
   ],
 };
