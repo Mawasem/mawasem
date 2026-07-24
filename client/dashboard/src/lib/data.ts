@@ -2,7 +2,8 @@ import {
   Building2,
   FolderKanban,
   LayoutGrid,
-  Leaf
+  Leaf,
+  Users
 } from "lucide-react";
 
 export const data = [
@@ -33,4 +34,16 @@ export const data = [
       },
     ],
   },
+  {
+    key: "customers",
+    url: "#",
+
+    items: [
+      {
+        key: "customers",
+        url: "/customers",
+        icon: Users,
+      }
+    ]
+  }
 ];

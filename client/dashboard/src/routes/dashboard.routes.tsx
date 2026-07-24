@@ -1,11 +1,12 @@
+import { BrandsPage } from "@/features/brands/pages/BrandsPage";
+import CategoriesPage from "@/features/categories/pages/CategoriesPage";
+import CollectionsPage from "@/features/collections/pages/CollectionsPage";
+import CustomerPage from "@/features/customers/pages/CustomerPage";
+import SeasonsPage from "@/features/seasons/pages/SeasonsPage";
 import AdminLayout from "@/layouts/AdminLayout";
 import DashboardPage from "@/pages/Home/DashboardPage";
 import type { RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "./protected-route";
-import CategoriesPage from "@/features/categories/pages/CategoriesPage";
-import CollectionsPage from "@/features/collections/pages/CollectionsPage";
-import { BrandsPage } from "@/features/brands/pages/BrandsPage";
-import SeasonsPage from "@/features/seasons/pages/SeasonsPage";
 
 export const dashboardRoutes: RouteObject = {
   path: "/",
@@ -34,6 +35,10 @@ export const dashboardRoutes: RouteObject = {
     {
       path: "seasons",
       element: <SeasonsPage />
+    },
+    {
+      path: "customers",
+      element: <CustomerPage />
     }
   ],
 };
