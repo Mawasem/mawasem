@@ -13,6 +13,9 @@ namespace Mawasem.API.Controllers;
 [Route("api/admin/delivery-areas")]
 public sealed class AdminDeliveryAreasController : ControllerBase
 {
+    private const string GetByIdRouteName =
+        "AdminDeliveryAreas.GetById";
+
     private readonly IDeliveryAreaService _deliveryAreaService;
 
     public AdminDeliveryAreasController(
@@ -47,7 +50,9 @@ public sealed class AdminDeliveryAreasController : ControllerBase
     }
 
     [RequirePermission(SystemPermissions.DeliveryAreas.View)]
-    [HttpGet("{deliveryAreaId:int}")]
+    [HttpGet(
+        "{deliveryAreaId:int}" ,
+        Name = GetByIdRouteName)]
     [ProducesResponseType(
         typeof(DeliveryAreaResponse) ,
         StatusCodes.Status200OK)]
@@ -102,8 +107,8 @@ public sealed class AdminDeliveryAreasController : ControllerBase
             return UnexpectedResponseFailure();
         }
 
-        return CreatedAtAction(
-            nameof(GetByIdAsync) ,
+        return CreatedAtRoute(
+            GetByIdRouteName ,
             new
             {
                 deliveryAreaId = result.Response.Id
