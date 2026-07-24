@@ -745,11 +745,23 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("LastModifiedOn")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IsActive");
 
-                    b.ToTable("DeliveryAreas", (string)null);
+                    b.HasIndex("Status");
+
+                    b.HasIndex("Status", "IsActive");
+
+                    b.ToTable("DeliveryAreas", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_DeliveryAreas_DeliveryFee_NonNegative", "[DeliveryFee] >= 0");
+
+                            t.HasCheckConstraint("CK_DeliveryAreas_Status", "[Status] IN (1, 2, 3)");
+                        });
                 });
 
             modelBuilder.Entity("Mawasem.Domain.Delivery.UserAddress", b =>
@@ -761,18 +773,22 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ApartmentNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("AreaName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("BuildingNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -780,40 +796,45 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedOn")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CustomAreaName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("DeletedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset?>("DeletedOn")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int?>("DeliveryAreaId")
+                    b.Property<int>("DeliveryAreaId")
                         .HasColumnType("int");
 
                     b.Property<string>("DetailedAddress")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("FloorNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Label")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Landmark")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -823,14 +844,13 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("RecipientName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("RecipientPhone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("RequiresAreaReview")
-                        .HasColumnType("bit");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -839,9 +859,19 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("DeliveryAreaId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("UX_UserAddresses_OneActiveDefaultPerUser")
+                        .HasFilter("[IsDefault] = 1 AND [IsActive] = 1");
 
-                    b.ToTable("UserAddresses");
+                    b.HasIndex("DeliveryAreaId", "IsActive");
+
+                    b.HasIndex("UserId", "IsActive");
+
+                    b.ToTable("UserAddresses", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_UserAddresses_DefaultAddressMustBeActive", "[IsDefault] = 0 OR [IsActive] = 1");
+                        });
                 });
 
             modelBuilder.Entity("Mawasem.Domain.Identity.ApplicationRole", b =>
@@ -1185,6 +1215,9 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<DateTime?>("CancelledAtUtc")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CouponCode")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -1227,6 +1260,10 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("IdempotencyKey")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -1254,8 +1291,68 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("RejectedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ShippingApartmentNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ShippingAreaName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ShippingBuildingNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ShippingCity")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("ShippingDeliveryAreaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShippingDeliveryAreaNameAr")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ShippingDeliveryAreaNameEn")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ShippingDetailedAddress")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ShippingFloorNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ShippingLandmark")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("ShippingRecipientName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ShippingRecipientPhone")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime?>("StockRestoredAtUtc")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("SubTotal")
                         .HasPrecision(18, 2)
@@ -1280,15 +1377,40 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("OrderStatus");
 
+                    b.HasIndex("PaymentMethod");
+
                     b.HasIndex("PaymentStatus");
+
+                    b.HasIndex("ShippingDeliveryAreaId");
 
                     b.HasIndex("UserAddressId");
 
                     b.HasIndex("UserId");
 
+                    b.HasIndex("OrderStatus", "OrderDate");
+
+                    b.HasIndex("UserId", "IdempotencyKey")
+                        .IsUnique()
+                        .HasFilter("[IdempotencyKey] IS NOT NULL");
+
                     b.HasIndex("UserId", "OrderDate");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Orders_Amounts_NonNegative", "[SubTotal] >= 0 AND [Discount] >= 0 AND [DeliveryFee] >= 0 AND [TotalAmount] >= 0");
+
+                            t.HasCheckConstraint("CK_Orders_DeliveryMethod", "[DeliveryMethod] IN (1, 2)");
+
+                            t.HasCheckConstraint("CK_Orders_Discount_NotGreaterThan_SubTotal", "[Discount] <= [SubTotal]");
+
+                            t.HasCheckConstraint("CK_Orders_OrderSource", "[OrderSource] IN (1, 2)");
+
+                            t.HasCheckConstraint("CK_Orders_OrderStatus", "[OrderStatus] IN (1, 2, 3, 4, 5, 6, 7, 8, 9)");
+
+                            t.HasCheckConstraint("CK_Orders_PaymentMethod", "[PaymentMethod] IN (1, 2)");
+
+                            t.HasCheckConstraint("CK_Orders_PaymentStatus", "[PaymentStatus] IN (1, 2, 3, 4)");
+                        });
                 });
 
             modelBuilder.Entity("Mawasem.Domain.Orders.OrderItem", b =>
@@ -1329,6 +1451,9 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ProductNameAr")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -1363,9 +1488,21 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("VariantSummaryAr")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("VariantSummaryEn")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("ProductVariantId");
 
@@ -1373,7 +1510,14 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("OrderId", "ProductVariantId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_OrderItems_Prices_NonNegative", "[UnitPrice] >= 0 AND [DiscountAmount] >= 0 AND [TotalPrice] >= 0");
+
+                            t.HasCheckConstraint("CK_OrderItems_Quantity_Positive", "[Quantity] > 0");
+
+                            t.HasCheckConstraint("CK_OrderItems_RefundedQuantity", "[RefundedQuantity] >= 0 AND [RefundedQuantity] <= [Quantity]");
+                        });
                 });
 
             modelBuilder.Entity("Mawasem.Domain.Orders.RefundRequest", b =>
@@ -2353,12 +2497,14 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("Mawasem.Domain.Delivery.DeliveryArea", "DeliveryArea")
                         .WithMany("UserAddresses")
-                        .HasForeignKey("DeliveryAreaId");
+                        .HasForeignKey("DeliveryAreaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Mawasem.Domain.Identity.ApplicationUser", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("DeliveryArea");
@@ -2428,6 +2574,11 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Mawasem.Domain.Orders.Order", b =>
                 {
+                    b.HasOne("Mawasem.Domain.Delivery.DeliveryArea", "ShippingDeliveryArea")
+                        .WithMany()
+                        .HasForeignKey("ShippingDeliveryAreaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Mawasem.Domain.Delivery.UserAddress", "UserAddress")
                         .WithMany()
                         .HasForeignKey("UserAddressId")
@@ -2438,6 +2589,8 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("ShippingDeliveryArea");
 
                     b.Navigation("User");
 
@@ -2452,6 +2605,12 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("ProductVariant", "ProductVariant")
                         .WithMany()
                         .HasForeignKey("ProductVariantId")
@@ -2459,6 +2618,8 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
+
+                    b.Navigation("Product");
 
                     b.Navigation("ProductVariant");
                 });

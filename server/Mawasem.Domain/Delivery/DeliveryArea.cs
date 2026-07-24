@@ -1,11 +1,15 @@
 ﻿using Mawasem.Domain.Common;
 using Mawasem.Domain.Common.ValueObjects;
+using Mawasem.Domain.Enums;
 
 namespace Mawasem.Domain.Delivery;
 
 public class DeliveryArea : BaseAuditableEntity
 {
     public LocalizedText Name { get; set; } = new("" , "");
+
+    public DeliveryAreaStatus Status { get; set; } =
+        DeliveryAreaStatus.Pending;
 
     public decimal DeliveryFee { get; set; }
 
