@@ -1,10 +1,11 @@
 import { api } from "@/lib/axios";
+import type { Season } from "../types";
 
 export async function getSeasonById(
-	seasonId: number
+	id: number
 ) {
-	const response = await api.get(
-		`/admin/seasons/${seasonId}`
+	const response = await api.get<Season>(
+		`/seasons/${id}`
 	);
 
 	return response.data;

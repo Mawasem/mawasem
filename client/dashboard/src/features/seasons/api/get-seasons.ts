@@ -1,4 +1,6 @@
 import { api } from "@/lib/axios";
+import type { PaginatedResponse } from "@/types/pagination";
+import type { Season, SeasonQueryParams } from "../types";
 
 export async function getSeasons({
 	search,
@@ -6,16 +8,12 @@ export async function getSeasons({
 	includeDeleted,
 	pageNumber,
 	pageSize,
-}: {
-	search?: string;
-	isActive?: boolean;
-	includeDeleted?: boolean;
-	pageNumber: number;
-	pageSize: number;
-}) {
+}: SeasonQueryParams) {
 	const response =
-		await api.get(
-			"/admin/seasons",
+		await api.get<
+			PaginatedResponse<Season>
+		>(
+			"/seasons",
 			{
 				params: {
 					search,

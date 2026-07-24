@@ -4,12 +4,7 @@ import { updateSeason } from "../api/update-season";
 export function useUpdateSeason() {
 	const queryClient = useQueryClient();
 
-	const {
-		mutate: updateSeasonMutation,
-		mutateAsync: updateSeasonMutationAsync,
-		error,
-		isPending: isLoading
-	} = useMutation({
+	return useMutation({
 		mutationFn: updateSeason,
 
 		onSuccess: () => {
@@ -18,11 +13,4 @@ export function useUpdateSeason() {
 			});
 		},
 	});
-
-	return {
-		updateSeasonMutation,
-		updateSeasonMutationAsync,
-		error,
-		isLoading
-	}
 }

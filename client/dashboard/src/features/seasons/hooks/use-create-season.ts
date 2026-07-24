@@ -3,13 +3,8 @@ import { createSeason } from "../api/create-seasons";
 
 export function useCreateSeason() {
 	const queryClient = useQueryClient();
-	
-	const {
-		mutate: createSeasonMutation,
-		mutateAsync: createSeasonMutationAsync,
-		isPending: isLoading,
-		error
-	} = useMutation({
+
+	return useMutation({
 		mutationFn: createSeason,
 
 		onSuccess: () => {
@@ -18,11 +13,4 @@ export function useCreateSeason() {
 			});
 		},
 	});
-
-	return {
-		createSeasonMutation,
-		createSeasonMutationAsync,
-		isLoading,
-		error
-	}
 }

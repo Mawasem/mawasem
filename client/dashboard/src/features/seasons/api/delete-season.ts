@@ -4,6 +4,6 @@ export async function deleteSeason(
 	seasonId: number
 ) {
 	await api.delete(
-		`/admin/seasons/${seasonId}`
+		`/seasons/${seasonId}`
 	);
 }

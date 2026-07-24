@@ -5,7 +5,7 @@ export async function restoreSeason(
 ) {
 	const response =
 		await api.post(
-			`/admin/seasons/${seasonId}/restore`
+			`/seasons/${seasonId}/restore`
 		);
 
 	return response.data;
