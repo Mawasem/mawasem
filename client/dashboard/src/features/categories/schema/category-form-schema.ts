@@ -1,18 +1,23 @@
 import { z } from "zod";
 
-export const categoryFormSchema = z.object({
-  nameAr: z
-    .string()
-    .trim()
-    .min(2, "Arabic name must be at least 2 characters."),
-  nameEn: z
-    .string()
-    .trim()
-    .min(2, "English name must be at least 2 characters."),
-});
+export const createCategoryFormSchema = (
+  t: (key: string) => string
+) =>
+  z.object({
+    nameAr: z
+      .string()
+      .trim()
+      .min(2, t("categories.validation.nameArMin")),
+    nameEn: z
+      .string()
+      .trim()
+      .min(2, t("categories.validation.nameEnMin")),
+  });
 
 export type CategoryFormValues =
-  z.infer<typeof categoryFormSchema>;
+  z.infer<
+    ReturnType<typeof createCategoryFormSchema>
+  >;
 
 export const categoryFormDefaultValues: CategoryFormValues =
   {

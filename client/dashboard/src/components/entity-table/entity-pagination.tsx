@@ -5,6 +5,10 @@ export function EntityPagination({
   totalCount,
   page,
   totalPages,
+  totalCountLabel = "row(s)",
+  pageLabel = "Page",
+  previousLabel = "Previous",
+  nextLabel = "Next",
   onPageChange,
 }: EntityPaginationProps) {
   const safeTotalPages =
@@ -13,12 +17,12 @@ export function EntityPagination({
   return (
     <div className="flex items-center justify-between px-2">
       <div className="flex-1 text-sm text-muted-foreground">
-        {totalCount} row(s)
+        {totalCount} {totalCountLabel}
       </div>
 
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="text-sm font-medium">
-          Page {page} of {safeTotalPages}
+          {pageLabel} {page} of {safeTotalPages}
         </div>
 
         <div className="flex items-center space-x-2">
@@ -30,7 +34,7 @@ export function EntityPagination({
               onPageChange(page - 1)
             }
           >
-            Previous
+            {previousLabel}
           </Button>
 
           <Button
@@ -41,7 +45,7 @@ export function EntityPagination({
               onPageChange(page + 1)
             }
           >
-            Next
+            {nextLabel}
           </Button>
         </div>
       </div>

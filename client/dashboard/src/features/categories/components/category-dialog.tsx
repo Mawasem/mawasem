@@ -1,5 +1,6 @@
 import { EntityDialog } from "@/components/entity-dialog/entity-dialog";
 import { EntityDialogFooter } from "@/components/entity-dialog/entity-dialog-footer";
+import { useTranslation } from "react-i18next";
 
 import { useCreateCategory } from "../hooks/use-create-category";
 import { useUpdateCategory } from "../hooks/use-update-category";
@@ -13,18 +14,20 @@ export function CategoryDialog({
   mode,
   category,
 }: CategoryDialogProps) {
+  const { t } = useTranslation();
+
   const createCategoryMutation = useCreateCategory();
   const updateCategoryMutation = useUpdateCategory();
 
   const isEditMode = mode === "edit";
 
   const title = isEditMode
-    ? "Edit Category"
-    : "Add Category";
+    ? t("categories.dialog.editTitle")
+    : t("categories.dialog.createTitle");
 
   const description = isEditMode
-    ? "Update category details and save your changes."
-    : "Create a new category by filling the details below.";
+    ? t("categories.dialog.editDescription")
+    : t("categories.dialog.createDescription");
 
   const formId = `category-form-${mode}`;
 
@@ -83,10 +86,10 @@ export function CategoryDialog({
           formId={formId}
           isLoading={isSubmitting}
           onCancel={() => onOpenChange(false)}
-          createLabel="Create category"
-          createLoadingLabel="Creating..."
-          editLabel="Save changes"
-          editLoadingLabel="Saving..."
+          createLabel={t("categories.actions.create")}
+          createLoadingLabel={t("common.creating")}
+          editLabel={t("common.saveChanges")}
+          editLoadingLabel={t("common.saving")}
         />
       </div>
     </EntityDialog>

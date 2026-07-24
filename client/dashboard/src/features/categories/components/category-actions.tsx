@@ -1,5 +1,6 @@
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { DeleteEntityDialog } from "@/components/entity-dialog/delete-entity-dialog";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,8 @@ import type { CategoryActionsProps } from "./types";
 export function CategoryActions({
   category,
 }: CategoryActionsProps) {
+  const { t, i18n } = useTranslation();
+
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] =
     useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] =
@@ -63,7 +66,7 @@ export function CategoryActions({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Open actions"
+            aria-label={t("categories.actions.openActions")}
           >
             <MoreHorizontal className="size-4" />
           </Button>
@@ -77,21 +80,23 @@ export function CategoryActions({
               }}
               disabled={isRestoring}
             >
-              {isRestoring ? "Restoring..." : "Restore Category"}
+              {isRestoring
+                ? t("common.restoring")
+                : t("categories.actions.restore")}
             </DropdownMenuItem>
           ) : (
             <>
               <DropdownMenuItem
                 onClick={() => setIsEditDialogOpen(true)}
               >
-                Edit Category
+                {t("categories.actions.edit")}
               </DropdownMenuItem>
 
               <DropdownMenuItem
                 variant="destructive"
                 onClick={() => setIsDeleteDialogOpen(true)}
               >
-                Delete Category
+                {t("categories.actions.delete")}
               </DropdownMenuItem>
             </>
           )}
@@ -108,13 +113,18 @@ export function CategoryActions({
       <DeleteEntityDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
-        title="Delete Category"
-        description="Are you sure you want to delete this category?\n\nThis action can be reversed later by restoring the category."
-        entityName={category.nameEn}
+        title={t("categories.deleteDialog.title")}
+        description={t("categories.deleteDialog.description")}
+        entityName={
+          i18n.resolvedLanguage === "ar"
+            ? category.nameAr
+            : category.nameEn
+        }
         isDeleting={isDeleting}
         errorMessage={deleteErrorMessage}
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
+        confirmLabel={t("common.delete")}
+        deletingLabel={t("common.deleting")}
+        cancelLabel={t("common.cancel")}
         onConfirm={handleDelete}
       />
     </>

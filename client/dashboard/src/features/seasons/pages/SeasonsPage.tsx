@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDebounce } from "use-debounce";
 
 import { EntityPagination } from "@/components/entity-table/entity-pagination";
@@ -9,10 +10,14 @@ import { Switch } from "@/components/ui/switch";
 import { normalizeArabic } from "@/lib/normalize-arabic";
 
 import { SeasonDialog } from "../components/season-dialog";
-import { seasonColumns } from "../components/season-columns";
+import { useSeasonColumns } from "../components/season-columns";
 import { useSeasons } from "../hooks/use-seasons";
 
 export default function SeasonsPage() {
+  const { t } = useTranslation();
+
+  const seasonColumns = useSeasonColumns();
+
   const [searchInput, setSearchInput] = useState("");
 
   const normalizedSearch =
@@ -34,7 +39,8 @@ export default function SeasonsPage() {
 
   const {
     data,
-    // isLoading,
+    isLoading,
+    error,
   } = useSeasons({
     search:
       debouncedSearch.length > 0
@@ -93,18 +99,19 @@ export default function SeasonsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">
-          Seasons
+          {t("seasons.page.title")}
         </h1>
 
         <p className="text-muted-foreground">
-          Manage your seasons.
+          {t("seasons.page.description")}
         </p>
       </div>
 
       <EntityToolbar
         search={searchInput}
         onSearch={handleSearch}
-        buttonText="Add Season"
+        searchPlaceholder={t("seasons.searchPlaceholder")}
+        buttonText={t("seasons.actions.create")}
         onAdd={handleAddSeason}
       />
 
@@ -119,7 +126,7 @@ export default function SeasonsPage() {
           />
 
           <Label htmlFor="active-seasons-only">
-            Active only
+            {t("seasons.filters.activeOnly")}
           </Label>
         </div>
 
@@ -133,7 +140,7 @@ export default function SeasonsPage() {
           />
 
           <Label htmlFor="include-deleted-seasons">
-            Include deleted
+            {t("seasons.filters.includeDeleted")}
           </Label>
         </div>
       </div>
@@ -141,13 +148,29 @@ export default function SeasonsPage() {
       <EntityTable
         columns={seasonColumns}
         data={data?.items ?? []}
-      // isLoading={isLoading}
+        emptyStateLabel={t("seasons.empty")}
       />
+
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">
+          {t("seasons.loading")}
+        </p>
+      ) : null}
+
+      {error instanceof Error ? (
+        <p className="text-sm text-destructive">
+          {t("seasons.errors.generic", { message: error.message })}
+        </p>
+      ) : null}
 
       <EntityPagination
         totalCount={totalCount}
         page={currentPage}
         totalPages={totalPages}
+        totalCountLabel={t("seasons.pagination.rows")}
+        pageLabel={t("seasons.pagination.page")}
+        previousLabel={t("seasons.pagination.previous")}
+        nextLabel={t("seasons.pagination.next")}
         onPageChange={handlePageChange}
       />
 

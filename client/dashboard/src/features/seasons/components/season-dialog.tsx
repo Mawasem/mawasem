@@ -1,5 +1,6 @@
 import { EntityDialog } from "@/components/entity-dialog/entity-dialog";
 import { EntityDialogFooter } from "@/components/entity-dialog/entity-dialog-footer";
+import { useTranslation } from "react-i18next";
 
 import { useCreateSeason } from "../hooks/use-create-season";
 import { useUpdateSeason } from "../hooks/use-update-season";
@@ -13,18 +14,20 @@ export function SeasonDialog({
   mode,
   season,
 }: SeasonDialogProps) {
+  const { t } = useTranslation();
+
   const createSeasonMutation = useCreateSeason();
   const updateSeasonMutation = useUpdateSeason();
 
   const isEditMode = mode === "edit";
 
   const title = isEditMode
-    ? "Edit Season"
-    : "Add Season";
+    ? t("seasons.dialog.editTitle")
+    : t("seasons.dialog.createTitle");
 
   const description = isEditMode
-    ? "Update season details and save your changes."
-    : "Create a new season by filling the details below.";
+    ? t("seasons.dialog.editDescription")
+    : t("seasons.dialog.createDescription");
 
   const formId = `season-form-${mode}`;
 
@@ -81,10 +84,10 @@ export function SeasonDialog({
           formId={formId}
           isLoading={isSubmitting}
           onCancel={() => onOpenChange(false)}
-          createLabel="Create season"
-          createLoadingLabel="Creating..."
-          editLabel="Save changes"
-          editLoadingLabel="Saving..."
+          createLabel={t("seasons.actions.create")}
+          createLoadingLabel={t("common.creating")}
+          editLabel={t("common.saveChanges")}
+          editLoadingLabel={t("common.saving")}
         />
       </div>
     </EntityDialog>

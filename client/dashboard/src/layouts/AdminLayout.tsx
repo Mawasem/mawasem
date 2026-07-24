@@ -8,7 +8,7 @@ export default function AdminLayout() {
     <div className="flex min-h-screen bg-muted/40">
       <SidebarProvider>
         <AppSidebar />
-        <SidebarTrigger className="-ml-1" />
+        <SidebarTrigger className="-ms-1" />
         
         <main className="min-w-0 flex-1 p-6">
           <Outlet />

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import {
   Form,
@@ -14,7 +15,7 @@ import { Input } from "@/components/ui/input";
 
 import {
   categoryFormDefaultValues,
-  categoryFormSchema,
+  createCategoryFormSchema,
   type CategoryFormValues,
 } from "../schema/category-form-schema";
 import type { CategoryFormProps } from "./types";
@@ -26,6 +27,11 @@ export function CategoryForm({
   errorMessage,
   onSubmit,
 }: CategoryFormProps) {
+  const { t } = useTranslation();
+
+  const categoryFormSchema =
+    createCategoryFormSchema(t);
+
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categoryFormSchema),
     defaultValues:
@@ -69,10 +75,10 @@ export function CategoryForm({
             name="nameAr"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Arabic Name</FormLabel>
+                <FormLabel>{t("categories.form.nameArLabel")}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Category name in Arabic"
+                    placeholder={t("categories.form.nameArPlaceholder")}
                     {...field}
                   />
                 </FormControl>
@@ -86,10 +92,10 @@ export function CategoryForm({
             name="nameEn"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>English Name</FormLabel>
+                <FormLabel>{t("categories.form.nameEnLabel")}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Category name in English"
+                    placeholder={t("categories.form.nameEnPlaceholder")}
                     {...field}
                   />
                 </FormControl>

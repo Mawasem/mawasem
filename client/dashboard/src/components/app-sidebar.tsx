@@ -1,12 +1,14 @@
 import * as React from "react";
+import "@/lib/i18n";
+import { useTranslation } from "react-i18next";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -26,17 +28,30 @@ import {
 import { data } from "@/lib/data";
 import { NavLink } from "react-router-dom";
 import { NavUser } from "./nav-user";
+import { LanguageSwitcher } from "./language-switcher";
 
 
 export function AppSidebar(
   props: React.ComponentProps<typeof Sidebar>
 ) {
-  return (
-    <Sidebar {...props}>
-      <SidebarHeader>
-        <NavUser />
-      </SidebarHeader>
+  const { t, i18n } = useTranslation();
 
+  const sidebarDirection =
+    i18n.dir(i18n.resolvedLanguage) === "rtl"
+      ? "rtl"
+      : "ltr";
+
+  const sidebarSide =
+    sidebarDirection === "rtl"
+      ? "right"
+      : "left";
+
+  return (
+    <Sidebar
+      {...props}
+      dir={sidebarDirection}
+      side={sidebarSide}
+    >
       <SidebarContent>
         {data.map((group) => (
           <Collapsible
@@ -47,7 +62,7 @@ export function AppSidebar(
             <SidebarGroup>
               <SidebarGroupLabel asChild>
                 <CollapsibleTrigger className="flex w-full items-center justify-between">
-                  <span>{group.key}</span>
+                  <span>{t(`sidebar.${group.key}`)}</span>
 
                   <ChevronRight className="size-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
                 </CollapsibleTrigger>
@@ -61,7 +76,7 @@ export function AppSidebar(
                         <SidebarMenuButton asChild>
                           <NavLink to={item.url}>
                             <item.icon />
-                            <span>{item.key}</span>
+                            <span>{t(`sidebar.${item.key}`)}</span>
                           </NavLink>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -73,6 +88,11 @@ export function AppSidebar(
           </Collapsible>
         ))}
       </SidebarContent>
+
+      <SidebarFooter>
+        <LanguageSwitcher />
+        <NavUser />
+      </SidebarFooter>
 
       <SidebarRail />
     </Sidebar>

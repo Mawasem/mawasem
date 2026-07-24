@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { EntityPagination } from "@/components/entity-table/entity-pagination";
 import { EntityTable } from "@/components/entity-table/entity-table";
@@ -7,10 +8,14 @@ import { EntityToolbar } from "@/components/entity-table/entity-toolbar";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { CategoryDialog } from "../components/category-dialog";
-import { categoryColumns } from "../components/category-columns";
+import { useCategoryColumns } from "../components/category-columns";
 import { useCategories } from "../hooks/use-categories";
 
 export default function CategoriesPage() {
+  const { t } = useTranslation();
+
+  const categoryColumns = useCategoryColumns();
+
   const [search, setSearch] = useState("");
   const [includeDeleted, setIncludeDeleted] =
     useState(false);
@@ -73,18 +78,19 @@ export default function CategoriesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">
-          Categories
+          {t("categories.page.title")}
         </h1>
 
         <p className="text-muted-foreground">
-          Manage your categories.
+          {t("categories.page.description")}
         </p>
       </div>
 
       <EntityToolbar
         search={search}
         onSearch={handleSearch}
-        buttonText="Add Category"
+        searchPlaceholder={t("categories.searchPlaceholder")}
+        buttonText={t("categories.actions.create")}
         onAdd={handleAddCategory}
       />
 
@@ -98,18 +104,19 @@ export default function CategoriesPage() {
         />
 
         <Label htmlFor="include-deleted-categories">
-          Include deleted
+          {t("categories.filters.includeDeleted")}
         </Label>
       </div>
 
       <EntityTable
         columns={categoryColumns}
         data={data?.items ?? []}
+        emptyStateLabel={t("categories.empty")}
       />
 
       {isLoading ? (
         <p className="text-sm text-muted-foreground">
-          Loading categories...
+          {t("categories.loading")}
         </p>
       ) : null}
 
@@ -123,6 +130,10 @@ export default function CategoriesPage() {
         totalCount={totalCount}
         page={currentPage}
         totalPages={totalPages}
+        totalCountLabel={t("categories.pagination.rows")}
+        pageLabel={t("categories.pagination.page")}
+        previousLabel={t("categories.pagination.previous")}
+        nextLabel={t("categories.pagination.next")}
         onPageChange={handlePageChange}
       />
 

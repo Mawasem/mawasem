@@ -7,6 +7,7 @@ import type { EntityToolbarProps } from "./types";
 export function EntityToolbar({
   search,
   onSearch,
+  searchPlaceholder = "Search...",
   buttonText,
   onAdd,
 }: EntityToolbarProps) {
@@ -15,7 +16,7 @@ export function EntityToolbar({
       <Input
         value={search}
         onChange={(e) => onSearch(e.target.value)}
-        placeholder="Search..."
+        placeholder={searchPlaceholder}
         className="max-w-sm"
       />
 

@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 import {
   Form,
@@ -14,8 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  createSeasonFormSchema,
   seasonFormDefaultValues,
-  seasonFormSchema,
   type SeasonFormValues,
 } from "../schema/season-schema";
 import type { SeasonFormProps } from "../types";
@@ -27,6 +28,11 @@ export function SeasonForm({
   onSubmit,
   errorMessage,
 }: SeasonFormProps) {
+  const { t } = useTranslation();
+
+  const seasonFormSchema =
+    createSeasonFormSchema(t);
+
   const form = useForm<SeasonFormValues>({
     resolver: zodResolver(seasonFormSchema),
     defaultValues:
@@ -76,9 +82,12 @@ export function SeasonForm({
             name="nameAr"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Arabic Name</FormLabel>
+                <FormLabel>{t("seasons.form.nameArLabel")}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Season name in Arabic" {...field} />
+                  <Input
+                    placeholder={t("seasons.form.nameArPlaceholder")}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -90,9 +99,12 @@ export function SeasonForm({
             name="nameEn"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>English Name</FormLabel>
+                <FormLabel>{t("seasons.form.nameEnLabel")}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Season name in English" {...field} />
+                  <Input
+                    placeholder={t("seasons.form.nameEnPlaceholder")}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -105,10 +117,10 @@ export function SeasonForm({
           name="descriptionAr"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Arabic Description</FormLabel>
+              <FormLabel>{t("seasons.form.descriptionArLabel")}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Arabic season description"
+                  placeholder={t("seasons.form.descriptionArPlaceholder")}
                   {...field}
                 />
               </FormControl>
@@ -122,10 +134,10 @@ export function SeasonForm({
           name="descriptionEn"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>English Description</FormLabel>
+              <FormLabel>{t("seasons.form.descriptionEnLabel")}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="English season description"
+                  placeholder={t("seasons.form.descriptionEnPlaceholder")}
                   {...field}
                 />
               </FormControl>
@@ -140,9 +152,9 @@ export function SeasonForm({
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-2xl border p-4">
               <div className="space-y-0.5">
-                <FormLabel>Active</FormLabel>
+                <FormLabel>{t("seasons.form.activeLabel")}</FormLabel>
                 <p className="text-sm text-muted-foreground">
-                  Toggle to control whether the season is visible.
+                  {t("seasons.form.activeHint")}
                 </p>
               </div>
 

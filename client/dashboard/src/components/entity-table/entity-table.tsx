@@ -19,6 +19,7 @@ import type { EntityTableProps } from "./types";
 export function EntityTable<TData, TValue>({
   columns,
   data,
+  emptyStateLabel = "No results found.",
 }: EntityTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -67,7 +68,7 @@ export function EntityTable<TData, TValue>({
                 colSpan={columns.length}
                 className="h-24 text-center"
               >
-                No results found.
+                {emptyStateLabel}
               </TableCell>
             </TableRow>
           )}

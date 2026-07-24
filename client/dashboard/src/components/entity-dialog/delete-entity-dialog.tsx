@@ -19,6 +19,7 @@ export function DeleteEntityDialog({
   isDeleting = false,
   errorMessage,
   confirmLabel = "Delete",
+  deletingLabel = "Deleting...",
   cancelLabel = "Cancel",
   onConfirm,
 }: DeleteEntityDialogProps) {
@@ -70,7 +71,7 @@ export function DeleteEntityDialog({
             disabled={isDeleting}
           >
             {isDeleting
-              ? "Deleting..."
+              ? deletingLabel
               : confirmLabel}
           </Button>
         </AlertDialogFooter>

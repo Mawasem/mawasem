@@ -33,6 +33,7 @@ export interface DeleteEntityDialogProps {
   isDeleting?: boolean;
   errorMessage?: string | null;
   confirmLabel?: string;
+  deletingLabel?: string;
   cancelLabel?: string;
   onConfirm: () => Promise<void>;
 }

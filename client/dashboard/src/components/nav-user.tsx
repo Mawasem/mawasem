@@ -1,4 +1,5 @@
 "use client"
+import "@/lib/i18n"
 import {
   Avatar,
   AvatarFallback
@@ -23,9 +24,12 @@ import {
   ChevronsUpDown,
   LogOut
 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 
 export function NavUser() {
+  const { t } = useTranslation();
+
   const { isMobile } = useSidebar();
 
   const { logout, isLoading: isLogoutLoading } = useLogout();
@@ -100,7 +104,7 @@ export function NavUser() {
               <LogOut />
 
               <span>
-                {isLogoutLoading ? "Loading..." : "Log out"}
+                {isLogoutLoading ? t("sidebar.loading") : t("sidebar.logout")}
               </span>
             </DropdownMenuItem>
           </DropdownMenuContent>

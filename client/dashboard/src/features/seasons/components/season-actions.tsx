@@ -1,5 +1,6 @@
 import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   AlertDialog,
@@ -25,6 +26,8 @@ import { SeasonDialog } from "./season-dialog";
 export function SeasonActions({
   season,
 }: SeasonActionsProps) {
+  const { t } = useTranslation();
+
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] =
     useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] =
@@ -44,7 +47,7 @@ export function SeasonActions({
   const errorMessage =
     deleteSeasonMutation.error instanceof Error
       ? deleteSeasonMutation.error.message
-      : "Failed to delete season. Please try again.";
+      : t("seasons.errors.deleteFailed");
 
   return (
     <>
@@ -53,7 +56,7 @@ export function SeasonActions({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Open actions"
+            aria-label={t("seasons.actions.openActions")}
           >
             <MoreHorizontal className="size-4" />
           </Button>
@@ -65,7 +68,7 @@ export function SeasonActions({
               setIsEditDialogOpen(true)
             }
           >
-            Edit Season
+            {t("seasons.actions.edit")}
           </DropdownMenuItem>
 
           <DropdownMenuItem
@@ -74,7 +77,7 @@ export function SeasonActions({
               setIsDeleteDialogOpen(true)
             }
           >
-            Delete Season
+            {t("seasons.actions.delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -93,11 +96,11 @@ export function SeasonActions({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Delete season
+                      {t("seasons.deleteDialog.title")}
             </AlertDialogTitle>
 
             <AlertDialogDescription>
-              Are you sure you want to delete this season? This action cannot be undone.
+                      {t("seasons.deleteDialog.description")}
             </AlertDialogDescription>
 
             {deleteSeasonMutation.isError ? (
@@ -113,7 +116,7 @@ export function SeasonActions({
                 variant="outline"
                 disabled={deleteSeasonMutation.isPending}
               >
-                Cancel
+                              {t("common.cancel")}
               </Button>
             </AlertDialogCancel>
 
@@ -123,8 +126,8 @@ export function SeasonActions({
               disabled={deleteSeasonMutation.isPending}
             >
               {deleteSeasonMutation.isPending
-                ? "Deleting..."
-                : "Delete"}
+                              ? t("common.deleting")
+                              : t("common.delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

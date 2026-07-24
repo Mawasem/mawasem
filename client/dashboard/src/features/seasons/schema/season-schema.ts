@@ -1,26 +1,31 @@
 import { z } from "zod";
 
-export const seasonFormSchema = z.object({
-  nameAr: z
-    .string()
-    .trim()
-    .min(1, "Arabic name is required."),
-  nameEn: z
-    .string()
-    .trim()
-    .min(1, "English name is required."),
-  descriptionAr: z
-    .string()
-    .trim()
-    .min(1, "Arabic description is required."),
-  descriptionEn: z
-    .string()
-    .trim()
-    .min(1, "English description is required."),
-  isActive: z.boolean(),
-});
+export const createSeasonFormSchema = (
+  t: (key: string) => string
+) =>
+  z.object({
+    nameAr: z
+      .string()
+      .trim()
+      .min(1, t("seasons.validation.nameArRequired")),
+    nameEn: z
+      .string()
+      .trim()
+      .min(1, t("seasons.validation.nameEnRequired")),
+    descriptionAr: z
+      .string()
+      .trim()
+      .min(1, t("seasons.validation.descriptionArRequired")),
+    descriptionEn: z
+      .string()
+      .trim()
+      .min(1, t("seasons.validation.descriptionEnRequired")),
+    isActive: z.boolean(),
+  });
 
-export type SeasonFormValues = z.infer<typeof seasonFormSchema>;
+export type SeasonFormValues = z.infer<
+  ReturnType<typeof createSeasonFormSchema>
+>;
 
 export const seasonFormDefaultValues: SeasonFormValues = {
   nameAr: "",

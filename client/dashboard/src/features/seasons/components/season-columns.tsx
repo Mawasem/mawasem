@@ -1,61 +1,75 @@
+import { useMemo } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useTranslation } from "react-i18next";
 
 import { Badge } from "@/components/ui/badge";
 
 import type { Season } from "../types";
 import { SeasonActions } from "./season-actions";
 
-export const seasonColumns: ColumnDef<Season>[] = [
-  {
-    accessorKey: "nameAr",
-    header: "Arabic Name",
-  },
+export function useSeasonColumns() {
+  const { t, i18n } = useTranslation();
 
-  {
-    accessorKey: "nameEn",
-    header: "English Name",
-  },
+  return useMemo<ColumnDef<Season>[]>(
+    () => [
+      {
+        accessorKey: "nameAr",
+        header: t("seasons.table.headers.nameAr"),
+      },
 
-  {
-    accessorKey: "descriptionAr",
-    header: "Arabic Description",
+      {
+        accessorKey: "nameEn",
+        header: t("seasons.table.headers.nameEn"),
+      },
 
-    cell: ({ row }) => {
-      const description = row.original.descriptionAr;
+      {
+        accessorKey: "descriptionAr",
+        header: t("seasons.table.headers.description"),
 
-      return (
-        <span className="line-clamp-1 max-w-[250px]">
-          {description}
-        </span>
-      );
-    },
-  },
+        cell: ({ row }) => {
+          const description =
+            i18n.resolvedLanguage === "ar"
+              ? row.original.descriptionAr
+              : row.original.descriptionEn;
 
-  {
-    accessorKey: "isActive",
-    header: "Status",
+          return (
+            <span className="line-clamp-1 max-w-[250px]">
+              {description}
+            </span>
+          );
+        },
+      },
 
-    cell: ({ row }) => {
-      const isActive = row.original.isActive;
+      {
+        accessorKey: "isActive",
+        header: t("seasons.table.headers.status"),
 
-      return (
-        <Badge variant={isActive ? "default" : "secondary"}>
-          {isActive ? "Active" : "Inactive"}
-        </Badge>
-      );
-    },
-  },
+        cell: ({ row }) => {
+          const isActive = row.original.isActive;
 
-  {
-    id: "actions",
-    header: "",
+          return (
+            <Badge variant={isActive ? "default" : "secondary"}>
+              {isActive
+                ? t("seasons.status.active")
+                : t("seasons.status.inactive")}
+            </Badge>
+          );
+        },
+      },
 
-    cell: ({ row }) => (
-      <div className="flex justify-end">
-        <SeasonActions
-          season={row.original}
-        />
-      </div>
-    ),
-  },
-];
+      {
+        id: "actions",
+        header: t("seasons.table.headers.actions"),
+
+        cell: ({ row }) => (
+          <div className="flex justify-end">
+            <SeasonActions
+              season={row.original}
+            />
+          </div>
+        ),
+      },
+    ],
+    [i18n.resolvedLanguage, t]
+  );
+}
