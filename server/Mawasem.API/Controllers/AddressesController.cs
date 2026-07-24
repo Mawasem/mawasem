@@ -14,6 +14,9 @@ namespace Mawasem.API.Controllers;
 [Authorize(Roles = SystemRoles.Customer)]
 public sealed class AddressesController : ControllerBase
 {
+    private const string GetByIdRouteName =
+        "CustomerAddresses.GetById";
+
     private readonly IUserAddressService _userAddressService;
 
     public AddressesController(
@@ -49,7 +52,9 @@ public sealed class AddressesController : ControllerBase
         return Ok(result.Response);
     }
 
-    [HttpGet("{addressId:int}")]
+    [HttpGet(
+        "{addressId:int}" ,
+        Name = GetByIdRouteName)]
     [ProducesResponseType(
         typeof(UserAddressResponse) ,
         StatusCodes.Status200OK)]
@@ -109,8 +114,8 @@ public sealed class AddressesController : ControllerBase
             return UnexpectedResponseFailure();
         }
 
-        return CreatedAtAction(
-            nameof(GetByIdAsync) ,
+        return CreatedAtRoute(
+            GetByIdRouteName ,
             new
             {
                 addressId = result.Response.Id
