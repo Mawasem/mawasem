@@ -1,0 +1,9 @@
+{
+  "common.cancel": "إلغاء",
+  "common.delete": "حذف",
+  "common.deleting": "جارٍ الحذف...",
+  "common.creating": "جارٍ الإنشاء...",
+  "common.saving": "جارٍ الحفظ...",
+  "common.saveChanges": "حفظ التغييرات",
+  "common.restoring": "جارٍ الاستعادة..."
+}

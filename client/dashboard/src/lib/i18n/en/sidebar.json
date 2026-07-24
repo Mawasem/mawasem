@@ -1,0 +1,22 @@
+{
+  "sidebar.dashboard": "Dashboard",
+  "sidebar.catalog": "Catalog",
+  "sidebar.brands": "Brands",
+  "sidebar.categories": "Categories",
+  "sidebar.collections": "Collections",
+  "sidebar.seasons": "Seasons",
+  "sidebar.products": "Products",
+  "sidebar.orders": "Orders",
+  "sidebar.customers": "Customers",
+  "sidebar.roles": "Roles",
+  "sidebar.employees": "Employees",
+  "sidebar.settings": "Settings",
+  "sidebar.logout": "Log out",
+  "sidebar.loading": "Loading...",
+  "sidebar.language": "Language",
+  "sidebar.languageEnglish": "English",
+  "sidebar.languageArabic": "العربية",
+  "sidebar.toggle": "Toggle Sidebar",
+  "sidebar.mobileTitle": "Sidebar",
+  "sidebar.mobileDescription": "Displays the mobile sidebar."
+}

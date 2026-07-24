@@ -1,0 +1,22 @@
+{
+  "sidebar.dashboard": "لوحة التحكم",
+  "sidebar.catalog": "الكتالوج",
+  "sidebar.brands": "العلامات التجارية",
+  "sidebar.categories": "الفئات",
+  "sidebar.collections": "المجموعات",
+  "sidebar.seasons": "المواسم",
+  "sidebar.products": "المنتجات",
+  "sidebar.orders": "الطلبات",
+  "sidebar.customers": "العملاء",
+  "sidebar.roles": "الأدوار",
+  "sidebar.employees": "الموظفون",
+  "sidebar.settings": "الإعدادات",
+  "sidebar.logout": "تسجيل الخروج",
+  "sidebar.loading": "جارٍ التحميل...",
+  "sidebar.language": "اللغة",
+  "sidebar.languageEnglish": "English",
+  "sidebar.languageArabic": "العربية",
+  "sidebar.toggle": "تبديل الشريط الجانبي",
+  "sidebar.mobileTitle": "الشريط الجانبي",
+  "sidebar.mobileDescription": "يعرض الشريط الجانبي على الجوال."
+}
