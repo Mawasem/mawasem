@@ -1,8 +1,10 @@
 import { api } from "@/lib/axios"
-import type { Customer } from "../types"
+import type { CustomerDetails } from "../types"
 
 export const getCustomer = async (customerId: number) => {
-  const data = await api.get<Customer>(`/customer/${customerId}`);
+  const { data } = await api.get<CustomerDetails>(
+    `/customers/${customerId}`
+  );
 
   return data;
 }
