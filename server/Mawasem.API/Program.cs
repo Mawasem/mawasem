@@ -1,27 +1,35 @@
 using Mawasem.API.Authentication;
 using Mawasem.API.Authorization;
 using Mawasem.API.BackgroundServices;
+using Mawasem.Application.Features.Addresses.Interfaces;
 using Mawasem.Application.Features.Authentication.Interfaces;
 using Mawasem.Application.Features.Authentication.Models;
 using Mawasem.Application.Features.Authentication.Options;
 using Mawasem.Application.Features.Brands.Interfaces;
 using Mawasem.Application.Features.Carts.Interfaces;
 using Mawasem.Application.Features.Categories.Interfaces;
+using Mawasem.Application.Features.Checkout.Interfaces;
 using Mawasem.Application.Features.Collections.Interfaces;
 using Mawasem.Application.Features.Customers.Interfaces;
+using Mawasem.Application.Features.DeliveryAreas.Interfaces;
 using Mawasem.Application.Features.Employees.Interfaces;
+using Mawasem.Application.Features.Orders.Interfaces;
 using Mawasem.Application.Features.Products.Interfaces;
 using Mawasem.Application.Features.PublicCatalog.Interfaces;
 using Mawasem.Application.Features.Roles.Interfaces;
 using Mawasem.Application.Features.Seasons.Interfaces;
 using Mawasem.Domain.Identity;
+using Mawasem.Infrastructure.Addresses;
 using Mawasem.Infrastructure.Authentication;
 using Mawasem.Infrastructure.Brands;
 using Mawasem.Infrastructure.Carts;
 using Mawasem.Infrastructure.Categories;
+using Mawasem.Infrastructure.Checkout;
 using Mawasem.Infrastructure.Collections;
 using Mawasem.Infrastructure.Customers;
+using Mawasem.Infrastructure.DeliveryAreas;
 using Mawasem.Infrastructure.Employees;
+using Mawasem.Infrastructure.Orders;
 using Mawasem.Infrastructure.Persistence.Contexts;
 using Mawasem.Infrastructure.Persistence.Seed;
 using Mawasem.Infrastructure.Products;
@@ -325,6 +333,22 @@ builder.Services.AddScoped<
     DashboardUserProfileService>();
 
 builder.Services.AddScoped<
+    IUserAddressService ,
+    UserAddressService>();
+
+builder.Services.AddScoped<
+    ICheckoutService ,
+    CheckoutService>();
+
+builder.Services.AddScoped<
+    IDeliveryAreaService ,
+    DeliveryAreaService>();
+
+builder.Services.AddScoped<
+    IOrderWorkflowService ,
+    OrderWorkflowService>();
+
+builder.Services.AddScoped<
     IBrandManagementService ,
     BrandManagementService>();
 
@@ -406,7 +430,8 @@ builder.Services.AddHostedService<
     PendingProductImageDeletionWorker>();
 
 builder.Services.AddScoped<
-    ICartService , CartService>();
+    ICartService ,
+    CartService>();
 
 var app = builder.Build();
 

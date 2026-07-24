@@ -9,7 +9,16 @@ public class DeliveryAreaConfiguration
 {
     public void Configure( EntityTypeBuilder<DeliveryArea> builder )
     {
-        builder.ToTable("DeliveryAreas");
+        builder.ToTable("DeliveryAreas" , tableBuilder =>
+        {
+            tableBuilder.HasCheckConstraint(
+                "CK_DeliveryAreas_Status" ,
+                "[Status] IN (1, 2, 3)");
+
+            tableBuilder.HasCheckConstraint(
+                "CK_DeliveryAreas_DeliveryFee_NonNegative" ,
+                "[DeliveryFee] >= 0");
+        });
 
         builder.HasKey(x => x.Id);
 
@@ -29,6 +38,10 @@ public class DeliveryAreaConfiguration
         builder.Navigation(x => x.Name)
             .IsRequired();
 
+        builder.Property(x => x.Status)
+            .HasConversion<int>()
+            .IsRequired();
+
         builder.Property(x => x.DeliveryFee)
             .HasPrecision(18 , 2)
             .HasDefaultValue(0m)
@@ -43,5 +56,13 @@ public class DeliveryAreaConfiguration
             .IsRequired();
 
         builder.HasIndex(x => x.IsActive);
+
+        builder.HasIndex(x => x.Status);
+
+        builder.HasIndex(x => new
+        {
+            x.Status ,
+            x.IsActive
+        });
     }
 }
