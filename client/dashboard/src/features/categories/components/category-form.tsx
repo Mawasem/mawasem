@@ -37,9 +37,9 @@ export function CategoryForm({
     defaultValues:
       mode === "edit" && category
         ? {
-            nameAr: category.nameAr,
-            nameEn: category.nameEn,
-          }
+          nameAr: category.nameAr,
+          nameEn: category.nameEn,
+        }
         : categoryFormDefaultValues,
   });
 

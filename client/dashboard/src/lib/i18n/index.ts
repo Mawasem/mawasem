@@ -6,38 +6,38 @@ import ar from "./ar.json";
 import en from "./en.json";
 
 const getDirection = (language: string) =>
-	language === "ar"
-		? "rtl"
-		: "ltr";
+  language === "ar"
+    ? "rtl"
+    : "ltr";
 
 const syncDocumentLanguage = (language: string) => {
-	if (typeof document === "undefined") {
-		return;
-	}
+  if (typeof document === "undefined") {
+    return;
+  }
 
-	document.documentElement.lang = language;
-	document.documentElement.dir = getDirection(language);
+  document.documentElement.lang = language;
+  document.documentElement.dir = getDirection(language);
 };
 
 if (!i18n.isInitialized) {
-	void i18n
-		.use(LanguageDetector)
-		.use(initReactI18next)
-		.init({
-			resources: {
-				en: { translation: en },
-				ar: { translation: ar },
-			},
-			supportedLngs: ["en", "ar"],
-			detection: {
-				order: ["localStorage", "navigator"],
-				caches: ["localStorage"],
-			},
-			fallbackLng: "en",
-			interpolation: {
-				escapeValue: false,
-			},
-		});
+  void i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      resources: {
+        en: { translation: en },
+        ar: { translation: ar },
+      },
+      supportedLngs: ["en", "ar"],
+      detection: {
+        order: ["localStorage", "navigator"],
+        caches: ["localStorage"],
+      },
+      fallbackLng: "en",
+      interpolation: {
+        escapeValue: false,
+      },
+    });
 }
 
 syncDocumentLanguage(i18n.resolvedLanguage ?? "en");

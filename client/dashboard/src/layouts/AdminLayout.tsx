@@ -9,7 +9,7 @@ export default function AdminLayout() {
       <SidebarProvider>
         <AppSidebar />
         <SidebarTrigger className="-ms-1" />
-        
+
         <main className="min-w-0 flex-1 p-6">
           <Outlet />
         </main>

@@ -20,7 +20,7 @@ export type CategoryFormValues =
   >;
 
 export const categoryFormDefaultValues: CategoryFormValues =
-  {
-    nameAr: "",
-    nameEn: "",
-  };
+{
+  nameAr: "",
+  nameEn: "",
+};

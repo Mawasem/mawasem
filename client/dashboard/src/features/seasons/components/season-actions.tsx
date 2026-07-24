@@ -96,11 +96,11 @@ export function SeasonActions({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-                      {t("seasons.deleteDialog.title")}
+              {t("seasons.deleteDialog.title")}
             </AlertDialogTitle>
 
             <AlertDialogDescription>
-                      {t("seasons.deleteDialog.description")}
+              {t("seasons.deleteDialog.description")}
             </AlertDialogDescription>
 
             {deleteSeasonMutation.isError ? (
@@ -116,7 +116,7 @@ export function SeasonActions({
                 variant="outline"
                 disabled={deleteSeasonMutation.isPending}
               >
-                              {t("common.cancel")}
+                {t("common.cancel")}
               </Button>
             </AlertDialogCancel>
 
@@ -126,8 +126,8 @@ export function SeasonActions({
               disabled={deleteSeasonMutation.isPending}
             >
               {deleteSeasonMutation.isPending
-                              ? t("common.deleting")
-                              : t("common.delete")}
+                ? t("common.deleting")
+                : t("common.delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
