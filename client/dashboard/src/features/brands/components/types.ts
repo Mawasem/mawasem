@@ -25,9 +25,3 @@ export interface BrandFormProps {
 export interface BrandActionsProps {
   brand: Brand;
 }
-
-export interface DeleteBrandDialogProps {
-  brandId: number;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}

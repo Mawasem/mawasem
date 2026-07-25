@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
 
-import { EntityTable } from "@/components/entity-table/entity-table";
-import { EntityToolbar } from "@/components/entity-table/entity-toolbar";
-import { EntityPagination } from "@/components/entity-table/entity-pagination";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { EntityManagementPage } from "@/components/entity-management/EntityManagementPage";
 import { normalizeArabic } from "@/lib/normalize-arabic";
 
 import { useBrands } from "../hooks/use-brands";
@@ -33,7 +29,6 @@ export function BrandsPage() {
 
   const {
     data,
-    //  isLoading
   } = useBrands({
     search:
       debouncedSearch.length > 0
@@ -81,56 +76,33 @@ export function BrandsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">
-          Brands
-        </h1>
-
-        <p className="text-muted-foreground">
-          Manage your brands.
-        </p>
-      </div>
-
-      <EntityToolbar
-        search={searchInput}
-        onSearch={handleSearch}
-        buttonText="Add Brand"
-        onAdd={handleAddBrand}
-      />
-
-      <div className="flex items-center gap-2">
-        <Switch
-          id="include-deleted-brands"
-          checked={includeDeleted}
-          onCheckedChange={
-            handleIncludeDeletedChange
-          }
-        />
-
-        <Label htmlFor="include-deleted-brands">
-          Include deleted
-        </Label>
-      </div>
-
-      <EntityTable
-        columns={brandColumns}
-        data={data?.items ?? []}
-      // isLoading={isLoading}
-      />
-
-      <EntityPagination
-        totalCount={totalCount}
-        page={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-
+    <EntityManagementPage
+      title="Brands"
+      description="Manage your brands."
+      search={searchInput}
+      onSearch={handleSearch}
+      includeDeleted={includeDeleted}
+      onIncludeDeletedChange={handleIncludeDeletedChange}
+      includeDeletedLabel="Include deleted"
+      includeDeletedSwitchId="include-deleted-brands"
+      buttonLabel="Add Brand"
+      onCreate={handleAddBrand}
+      columns={brandColumns}
+      data={data?.items ?? []}
+      loading={false}
+      error={null}
+      pagination={{
+        totalCount,
+        page: currentPage,
+        totalPages,
+        onPageChange: handlePageChange,
+      }}
+    >
       <BrandDialog
         mode="create"
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
       />
-    </div>
+    </EntityManagementPage>
   );
 }

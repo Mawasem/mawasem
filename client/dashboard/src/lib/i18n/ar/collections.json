@@ -13,6 +13,7 @@
   "collections.actions.edit": "تعديل المجموعة",
   "collections.actions.delete": "حذف المجموعة",
   "collections.actions.restore": "استعادة المجموعة",
+  "collections.actions.openActions": "فتح الإجراءات",
 
   "collections.dialog.createTitle": "إضافة مجموعة",
   "collections.dialog.createDescription": "أنشئ مجموعة جديدة للكتالوج.",

@@ -2,15 +2,8 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { EntityDeleteDialog } from "@/components/entity-dialog/EntityDeleteDialog";
+import { EntityRestoreDialog } from "@/components/entity-dialog/EntityRestoreDialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,34 +13,47 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { useDeleteSeason } from "../hooks/use-delete-season";
-import type { SeasonActionsProps } from "../types";
+import { useRestoreSeason } from "../hooks/use-restore-season";
+import type { Season, SeasonActionsProps } from "../types";
 import { SeasonDialog } from "./season-dialog";
+
+interface SeasonWithLegacyDeleted extends Season {
+  IsDeleted?: boolean;
+}
 
 export function SeasonActions({
   season,
 }: SeasonActionsProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] =
+    useState(false);
+  const [isRestoreDialogOpen, setIsRestoreDialogOpen] =
     useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] =
     useState(false);
 
   const deleteSeasonMutation = useDeleteSeason();
+  const {
+    restoreSeasonMutationAsync,
+    isLoading: isRestoring,
+    error: restoreError,
+  } = useRestoreSeason();
 
-  const handleDelete = async () => {
-    try {
-      await deleteSeasonMutation.mutateAsync(season.id);
-      setIsDeleteDialogOpen(false);
-    } catch {
-      // Error is shown in the dialog body.
-    }
+  const restoreSeasonMutation = {
+    mutateAsync: restoreSeasonMutationAsync,
+    isLoading: isRestoring,
+    error: restoreError,
   };
 
-  const errorMessage =
-    deleteSeasonMutation.error instanceof Error
-      ? deleteSeasonMutation.error.message
-      : t("seasons.errors.deleteFailed");
+  const entityName =
+    i18n.resolvedLanguage === "ar"
+      ? season.nameAr
+      : season.nameEn;
+  const isDeleted = Boolean(
+    (season as SeasonWithLegacyDeleted).isDeleted ??
+      (season as SeasonWithLegacyDeleted).IsDeleted
+  );
 
   return (
     <>
@@ -63,22 +69,35 @@ export function SeasonActions({
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() =>
-              setIsEditDialogOpen(true)
-            }
-          >
-            {t("seasons.actions.edit")}
-          </DropdownMenuItem>
+          {isDeleted ? (
+            <DropdownMenuItem
+              onClick={() => setIsRestoreDialogOpen(true)}
+              disabled={isRestoring}
+            >
+              {isRestoring
+                ? t("common.restoring")
+                : t("seasons.actions.restore")}
+            </DropdownMenuItem>
+          ) : (
+            <>
+              <DropdownMenuItem
+                onClick={() =>
+                  setIsEditDialogOpen(true)
+                }
+              >
+                {t("seasons.actions.edit")}
+              </DropdownMenuItem>
 
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() =>
-              setIsDeleteDialogOpen(true)
-            }
-          >
-            {t("seasons.actions.delete")}
-          </DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() =>
+                  setIsDeleteDialogOpen(true)
+                }
+              >
+                {t("seasons.actions.delete")}
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -89,49 +108,31 @@ export function SeasonActions({
         onOpenChange={setIsEditDialogOpen}
       />
 
-      <AlertDialog
+      <EntityDeleteDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t("seasons.deleteDialog.title")}
-            </AlertDialogTitle>
+        title={t("seasons.deleteDialog.title")}
+        description={t("seasons.deleteDialog.description")}
+        entityName={entityName}
+        confirmLabel={t("common.delete")}
+        loadingLabel={t("common.deleting")}
+        cancelLabel={t("common.cancel")}
+        mutation={deleteSeasonMutation}
+        entityId={season.id}
+      />
 
-            <AlertDialogDescription>
-              {t("seasons.deleteDialog.description")}
-            </AlertDialogDescription>
-
-            {deleteSeasonMutation.isError ? (
-              <p className="text-sm text-destructive">
-                {errorMessage}
-              </p>
-            ) : null}
-          </AlertDialogHeader>
-
-          <AlertDialogFooter>
-            <AlertDialogCancel asChild>
-              <Button
-                variant="outline"
-                disabled={deleteSeasonMutation.isPending}
-              >
-                {t("common.cancel")}
-              </Button>
-            </AlertDialogCancel>
-
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={deleteSeasonMutation.isPending}
-            >
-              {deleteSeasonMutation.isPending
-                ? t("common.deleting")
-                : t("common.delete")}
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <EntityRestoreDialog
+        open={isRestoreDialogOpen}
+        onOpenChange={setIsRestoreDialogOpen}
+        title={t("seasons.restoreDialog.title")}
+        description={t("seasons.restoreDialog.description")}
+        entityName={entityName}
+        confirmLabel={t("seasons.actions.restore")}
+        loadingLabel={t("common.restoring")}
+        cancelLabel={t("common.cancel")}
+        mutation={restoreSeasonMutation}
+        entityId={season.id}
+      />
     </>
   );
 }

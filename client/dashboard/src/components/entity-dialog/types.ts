@@ -37,3 +37,29 @@ export interface DeleteEntityDialogProps {
   cancelLabel?: string;
   onConfirm: () => Promise<void>;
 }
+
+export interface EntityMutation<
+  TEntityId = number,
+> {
+  mutateAsync: (
+    entityId: TEntityId
+  ) => Promise<unknown>;
+  isPending?: boolean;
+  isLoading?: boolean;
+  error?: unknown;
+}
+
+export interface EntityMutationDialogProps<
+  TEntityId = number,
+> {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  description: string;
+  entityName?: string;
+  confirmLabel?: string;
+  loadingLabel?: string;
+  cancelLabel?: string;
+  mutation: EntityMutation<TEntityId>;
+  entityId: TEntityId;
+}

@@ -38,10 +38,16 @@ export const brandColumns: ColumnDef<Brand>[] = [
 
     cell: ({ row }) => {
       const isActive = row.original.isActive;
+      const isDeleted = Boolean(
+        (row.original as { isDeleted?: boolean; IsDeleted?: boolean }).isDeleted ??
+          (row.original as { isDeleted?: boolean; IsDeleted?: boolean }).IsDeleted
+      );
 
       return (
-        <Badge variant={isActive ? "default" : "secondary"}>
-          {isActive ? "Active" : "Inactive"}
+        <Badge
+          variant={isDeleted ? "secondary" : isActive ? "default" : "secondary"}
+        >
+          {isDeleted ? "Deleted" : isActive ? "Active" : "Inactive"}
         </Badge>
       );
     },

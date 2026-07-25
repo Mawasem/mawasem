@@ -2,7 +2,8 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { DeleteEntityDialog } from "@/components/entity-dialog/delete-entity-dialog";
+import { EntityDeleteDialog } from "@/components/entity-dialog/EntityDeleteDialog";
+import { EntityRestoreDialog } from "@/components/entity-dialog/EntityRestoreDialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,6 +24,8 @@ export function CategoryActions({
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] =
     useState(false);
+  const [isRestoreDialogOpen, setIsRestoreDialogOpen] =
+    useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] =
     useState(false);
 
@@ -35,29 +38,25 @@ export function CategoryActions({
   const {
     restoreCategoryMutationAsync,
     isLoading: isRestoring,
+    error: restoreError,
   } = useRestoreCategory();
 
-  const deleteErrorMessage =
-    deleteError instanceof Error
-      ? deleteError.message
-      : null;
-
-  const handleDelete = async () => {
-    try {
-      await deleteCategoryMutationAsync(category.id);
-      setIsDeleteDialogOpen(false);
-    } catch {
-      // Error is shown in the dialog.
-    }
+  const deleteMutation = {
+    mutateAsync: deleteCategoryMutationAsync,
+    isLoading: isDeleting,
+    error: deleteError,
   };
 
-  const handleRestore = async () => {
-    try {
-      await restoreCategoryMutationAsync(category.id);
-    } catch {
-      // Mutation error is surfaced by React Query.
-    }
+  const restoreMutation = {
+    mutateAsync: restoreCategoryMutationAsync,
+    isLoading: isRestoring,
+    error: restoreError,
   };
+
+  const entityName =
+    i18n.resolvedLanguage === "ar"
+      ? category.nameAr
+      : category.nameEn;
 
   return (
     <>
@@ -75,9 +74,7 @@ export function CategoryActions({
         <DropdownMenuContent align="end">
           {category.isDeleted ? (
             <DropdownMenuItem
-              onClick={() => {
-                void handleRestore();
-              }}
+              onClick={() => setIsRestoreDialogOpen(true)}
               disabled={isRestoring}
             >
               {isRestoring
@@ -110,22 +107,30 @@ export function CategoryActions({
         onOpenChange={setIsEditDialogOpen}
       />
 
-      <DeleteEntityDialog
+      <EntityDeleteDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         title={t("categories.deleteDialog.title")}
         description={t("categories.deleteDialog.description")}
-        entityName={
-          i18n.resolvedLanguage === "ar"
-            ? category.nameAr
-            : category.nameEn
-        }
-        isDeleting={isDeleting}
-        errorMessage={deleteErrorMessage}
+        entityName={entityName}
         confirmLabel={t("common.delete")}
-        deletingLabel={t("common.deleting")}
+        loadingLabel={t("common.deleting")}
         cancelLabel={t("common.cancel")}
-        onConfirm={handleDelete}
+        mutation={deleteMutation}
+        entityId={category.id}
+      />
+
+      <EntityRestoreDialog
+        open={isRestoreDialogOpen}
+        onOpenChange={setIsRestoreDialogOpen}
+        title={t("categories.restoreDialog.title")}
+        description={t("categories.restoreDialog.description")}
+        entityName={entityName}
+        confirmLabel={t("categories.actions.restore")}
+        loadingLabel={t("common.restoring")}
+        cancelLabel={t("common.cancel")}
+        mutation={restoreMutation}
+        entityId={category.id}
       />
     </>
   );

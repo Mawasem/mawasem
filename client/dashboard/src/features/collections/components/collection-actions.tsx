@@ -2,7 +2,8 @@ import { MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { DeleteEntityDialog } from "@/components/entity-dialog/delete-entity-dialog";
+import { EntityDeleteDialog } from "@/components/entity-dialog/EntityDeleteDialog";
+import { EntityRestoreDialog } from "@/components/entity-dialog/EntityRestoreDialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,6 +24,8 @@ export function CollectionActions({
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] =
     useState(false);
+  const [isRestoreDialogOpen, setIsRestoreDialogOpen] =
+    useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] =
     useState(false);
 
@@ -35,29 +38,25 @@ export function CollectionActions({
   const {
     restoreCollectionAsync,
     isLoading: isRestoring,
+    error: restoreError,
   } = useRestoreCollection();
 
-  const deleteErrorMessage =
-    deleteError instanceof Error
-      ? deleteError.message
-      : null;
-
-  const handleDelete = async () => {
-    try {
-      await deleteCollectionAsync(collection.id);
-      setIsDeleteDialogOpen(false);
-    } catch {
-      // Error is shown in the dialog.
-    }
+  const deleteMutation = {
+    mutateAsync: deleteCollectionAsync,
+    isLoading: isDeleting,
+    error: deleteError,
   };
 
-  const handleRestore = async () => {
-    try {
-      await restoreCollectionAsync(collection.id);
-    } catch {
-      // Mutation error is surfaced by React Query.
-    }
+  const restoreMutation = {
+    mutateAsync: restoreCollectionAsync,
+    isLoading: isRestoring,
+    error: restoreError,
   };
+
+  const entityName =
+    i18n.resolvedLanguage === "ar"
+      ? collection.nameAr
+      : collection.nameEn;
 
   return (
     <>
@@ -66,7 +65,7 @@ export function CollectionActions({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={t("categories.actions.openActions")}
+            aria-label={t("collections.actions.openActions")}
           >
             <MoreHorizontal className="size-4" />
           </Button>
@@ -75,9 +74,7 @@ export function CollectionActions({
         <DropdownMenuContent align="end">
           {collection.isDeleted ? (
             <DropdownMenuItem
-              onClick={() => {
-                void handleRestore();
-              }}
+              onClick={() => setIsRestoreDialogOpen(true)}
               disabled={isRestoring}
             >
               {isRestoring
@@ -110,22 +107,30 @@ export function CollectionActions({
         onOpenChange={setIsEditDialogOpen}
       />
 
-      <DeleteEntityDialog
+      <EntityDeleteDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         title={t("collections.delete.title")}
         description={t("collections.delete.description")}
-        entityName={
-          i18n.resolvedLanguage === "ar"
-            ? collection.nameAr
-            : collection.nameEn
-        }
-        isDeleting={isDeleting}
-        errorMessage={deleteErrorMessage}
+        entityName={entityName}
         confirmLabel={t("common.delete")}
-        deletingLabel={t("common.deleting")}
+        loadingLabel={t("common.deleting")}
         cancelLabel={t("common.cancel")}
-        onConfirm={handleDelete}
+        mutation={deleteMutation}
+        entityId={collection.id}
+      />
+
+      <EntityRestoreDialog
+        open={isRestoreDialogOpen}
+        onOpenChange={setIsRestoreDialogOpen}
+        title={t("collections.restore.title")}
+        description={t("collections.restore.description")}
+        entityName={entityName}
+        confirmLabel={t("collections.restore.confirm")}
+        loadingLabel={t("common.restoring")}
+        cancelLabel={t("common.cancel")}
+        mutation={restoreMutation}
+        entityId={collection.id}
       />
     </>
   );

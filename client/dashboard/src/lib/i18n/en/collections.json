@@ -13,6 +13,7 @@
   "collections.actions.edit": "Edit Collection",
   "collections.actions.delete": "Delete Collection",
   "collections.actions.restore": "Restore Collection",
+  "collections.actions.openActions": "Open actions",
 
   "collections.dialog.createTitle": "Create Collection",
   "collections.dialog.createDescription": "Create a new collection for your catalogue.",

@@ -2,11 +2,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { EntityPagination } from "@/components/entity-table/entity-pagination";
-import { EntityTable } from "@/components/entity-table/entity-table";
-import { EntityToolbar } from "@/components/entity-table/entity-toolbar";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { EntityManagementPage } from "@/components/entity-management/EntityManagementPage";
 import { CategoryDialog } from "../components/category-dialog";
 import { useCategoryColumns } from "../components/category-columns";
 import { useCategories } from "../hooks/use-categories";
@@ -75,73 +71,40 @@ export default function CategoriesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">
-          {t("categories.page.title")}
-        </h1>
-
-        <p className="text-muted-foreground">
-          {t("categories.page.description")}
-        </p>
-      </div>
-
-      <EntityToolbar
-        search={search}
-        onSearch={handleSearch}
-        searchPlaceholder={t("categories.searchPlaceholder")}
-        buttonText={t("categories.actions.create")}
-        onAdd={handleAddCategory}
-      />
-
-      <div className="flex items-center gap-2">
-        <Switch
-          id="include-deleted-categories"
-          checked={includeDeleted}
-          onCheckedChange={
-            handleIncludeDeletedChange
-          }
-        />
-
-        <Label htmlFor="include-deleted-categories">
-          {t("categories.filters.includeDeleted")}
-        </Label>
-      </div>
-
-      <EntityTable
-        columns={categoryColumns}
-        data={data?.items ?? []}
-        emptyStateLabel={t("categories.empty")}
-      />
-
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">
-          {t("categories.loading")}
-        </p>
-      ) : null}
-
-      {error instanceof Error ? (
-        <p className="text-sm text-destructive">
-          {error.message}
-        </p>
-      ) : null}
-
-      <EntityPagination
-        totalCount={totalCount}
-        page={currentPage}
-        totalPages={totalPages}
-        totalCountLabel={t("categories.pagination.rows")}
-        pageLabel={t("categories.pagination.page")}
-        previousLabel={t("categories.pagination.previous")}
-        nextLabel={t("categories.pagination.next")}
-        onPageChange={handlePageChange}
-      />
-
+    <EntityManagementPage
+      title={t("categories.page.title")}
+      description={t("categories.page.description")}
+      search={search}
+      onSearch={handleSearch}
+      includeDeleted={includeDeleted}
+      onIncludeDeletedChange={handleIncludeDeletedChange}
+      includeDeletedLabel={t("categories.filters.includeDeleted")}
+      includeDeletedSwitchId="include-deleted-categories"
+      buttonLabel={t("categories.actions.create")}
+      onCreate={handleAddCategory}
+      columns={categoryColumns}
+      data={data?.items ?? []}
+      emptyStateLabel={t("categories.empty")}
+      loading={isLoading}
+      loadingLabel={t("categories.loading")}
+      error={error}
+      pagination={{
+        totalCount,
+        page: currentPage,
+        totalPages,
+        totalCountLabel: t("categories.pagination.rows"),
+        pageLabel: t("categories.pagination.page"),
+        previousLabel: t("categories.pagination.previous"),
+        nextLabel: t("categories.pagination.next"),
+        onPageChange: handlePageChange,
+      }}
+      searchPlaceholder={t("categories.searchPlaceholder")}
+    >
       <CategoryDialog
         mode="create"
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
       />
-    </div>
+    </EntityManagementPage>
   );
 }

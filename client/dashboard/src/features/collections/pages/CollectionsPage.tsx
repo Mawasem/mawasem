@@ -2,16 +2,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { EntityPagination } from "@/components/entity-table/entity-pagination";
-import { EntityTable } from "@/components/entity-table/entity-table";
-import { EntityToolbar } from "@/components/entity-table/entity-toolbar";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { EntityManagementPage } from "@/components/entity-management/EntityManagementPage";
 import { CollectionDialog } from "../components/collection-dialog";
 import { useCollectionColumns } from "../components/collection-columns";
 import { useCollections } from "../hooks/use-collections";
 
-export default function CategoriesPage() {
+export default function CollectionsPage() {
   const { t } = useTranslation();
 
   const collectionColumns = useCollectionColumns();
@@ -75,71 +71,40 @@ export default function CategoriesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">
-          {t("categories.page.title")}
-        </h1>
-
-        <p className="text-muted-foreground">
-          {t("categories.page.description")}
-        </p>
-      </div>
-
-      <EntityToolbar
-        search={search}
-        onSearch={handleSearch}
-        searchPlaceholder={t("collections.searchPlaceholder")}
-        buttonText={t("collections.actions.create")}
-        onAdd={handleAddCollection}
-      />
-
-      <div className="flex items-center gap-2">
-        <Switch
-          id="include-deleted-collections"
-          checked={includeDeleted}
-          onCheckedChange={handleIncludeDeletedChange}
-        />
-
-        <Label htmlFor="include-deleted-collections">
-          {t("collections.filters.includeDeleted")}
-        </Label>
-      </div>
-
-      <EntityTable
-        columns={collectionColumns}
-        data={data?.items ?? []}
-        emptyStateLabel={t("collections.empty")}
-      />
-
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">
-          {t("collections.loading")}
-        </p>
-      ) : null}
-
-      {error instanceof Error ? (
-        <p className="text-sm text-destructive">
-          {error.message}
-        </p>
-      ) : null}
-
-      <EntityPagination
-        totalCount={totalCount}
-        page={currentPage}
-        totalPages={totalPages}
-        totalCountLabel={t("collections.pagination.rows")}
-        pageLabel={t("collections.pagination.page")}
-        previousLabel={t("collections.pagination.previous")}
-        nextLabel={t("collections.pagination.next")}
-        onPageChange={handlePageChange}
-      />
-
+    <EntityManagementPage
+      title={t("collections.page.title")}
+      description={t("collections.page.description")}
+      search={search}
+      onSearch={handleSearch}
+      includeDeleted={includeDeleted}
+      onIncludeDeletedChange={handleIncludeDeletedChange}
+      includeDeletedLabel={t("collections.filters.includeDeleted")}
+      includeDeletedSwitchId="include-deleted-collections"
+      buttonLabel={t("collections.actions.create")}
+      onCreate={handleAddCollection}
+      columns={collectionColumns}
+      data={data?.items ?? []}
+      emptyStateLabel={t("collections.empty")}
+      loading={isLoading}
+      loadingLabel={t("collections.loading")}
+      error={error}
+      pagination={{
+        totalCount,
+        page: currentPage,
+        totalPages,
+        totalCountLabel: t("collections.pagination.rows"),
+        pageLabel: t("collections.pagination.page"),
+        previousLabel: t("collections.pagination.previous"),
+        nextLabel: t("collections.pagination.next"),
+        onPageChange: handlePageChange,
+      }}
+      searchPlaceholder={t("collections.searchPlaceholder")}
+    >
       <CollectionDialog
         mode="create"
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
       />
-    </div>
+    </EntityManagementPage>
   );
 }

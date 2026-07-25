@@ -46,12 +46,20 @@ export function useSeasonColumns() {
 
         cell: ({ row }) => {
           const isActive = row.original.isActive;
+          const isDeleted = Boolean(
+            (row.original as { isDeleted?: boolean; IsDeleted?: boolean }).isDeleted ??
+              (row.original as { isDeleted?: boolean; IsDeleted?: boolean }).IsDeleted
+          );
 
           return (
-            <Badge variant={isActive ? "default" : "secondary"}>
-              {isActive
-                ? t("seasons.status.active")
-                : t("seasons.status.inactive")}
+            <Badge
+              variant={isDeleted ? "secondary" : isActive ? "default" : "secondary"}
+            >
+              {isDeleted
+                ? t("seasons.status.deleted")
+                : isActive
+                  ? t("seasons.status.active")
+                  : t("seasons.status.inactive")}
             </Badge>
           );
         },

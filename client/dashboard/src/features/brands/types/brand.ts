@@ -8,6 +8,7 @@ export interface Brand {
   descriptionEn: string;
   logoUrl: string;
   isActive: boolean;
+  isDeleted: boolean;
 }
 
 export interface BrandPayload {

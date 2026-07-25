@@ -29,6 +29,8 @@
   "categories.validation.nameEnMin": "English name must be at least 2 characters.",
   "categories.deleteDialog.title": "Delete Category",
   "categories.deleteDialog.description": "Are you sure you want to delete this category?\n\nThis action can be reversed later by restoring the category.",
+  "categories.restoreDialog.title": "Restore Category",
+  "categories.restoreDialog.description": "Are you sure you want to restore this category?",
   "categories.pagination.rows": "row(s)",
   "categories.pagination.page": "Page",
   "categories.pagination.previous": "Previous",

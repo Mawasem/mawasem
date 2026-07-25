@@ -29,6 +29,8 @@
   "categories.validation.nameEnMin": "يجب ألا يقل الاسم الإنجليزي عن حرفين.",
   "categories.deleteDialog.title": "حذف الفئة",
   "categories.deleteDialog.description": "هل أنت متأكد من حذف هذه الفئة؟\n\nيمكن التراجع عن هذا الإجراء لاحقًا عبر استعادة الفئة.",
+  "categories.restoreDialog.title": "استعادة الفئة",
+  "categories.restoreDialog.description": "هل أنت متأكد من استعادة هذه الفئة؟",
   "categories.pagination.rows": "صف",
   "categories.pagination.page": "الصفحة",
   "categories.pagination.previous": "السابق",

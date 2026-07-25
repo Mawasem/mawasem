@@ -2,9 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "use-debounce";
 
-import { EntityPagination } from "@/components/entity-table/entity-pagination";
-import { EntityTable } from "@/components/entity-table/entity-table";
-import { EntityToolbar } from "@/components/entity-table/entity-toolbar";
+import { EntityManagementPage } from "@/components/entity-management/EntityManagementPage";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { normalizeArabic } from "@/lib/normalize-arabic";
@@ -96,26 +94,40 @@ export default function SeasonsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">
-          {t("seasons.page.title")}
-        </h1>
-
-        <p className="text-muted-foreground">
-          {t("seasons.page.description")}
-        </p>
-      </div>
-
-      <EntityToolbar
-        search={searchInput}
-        onSearch={handleSearch}
-        searchPlaceholder={t("seasons.searchPlaceholder")}
-        buttonText={t("seasons.actions.create")}
-        onAdd={handleAddSeason}
-      />
-
-      <div className="flex items-center gap-6">
+    <EntityManagementPage
+      title={t("seasons.page.title")}
+      description={t("seasons.page.description")}
+      search={searchInput}
+      onSearch={handleSearch}
+      includeDeleted={includeDeleted}
+      onIncludeDeletedChange={handleIncludeDeletedChange}
+      includeDeletedLabel={t("seasons.filters.includeDeleted")}
+      includeDeletedSwitchId="include-deleted-seasons"
+      buttonLabel={t("seasons.actions.create")}
+      onCreate={handleAddSeason}
+      columns={seasonColumns}
+      data={data?.items ?? []}
+      emptyStateLabel={t("seasons.empty")}
+      loading={isLoading}
+      loadingLabel={t("seasons.loading")}
+      error={error}
+      errorRenderer={(nextError) =>
+        t("seasons.errors.generic", {
+          message: nextError.message,
+        })
+      }
+      pagination={{
+        totalCount,
+        page: currentPage,
+        totalPages,
+        totalCountLabel: t("seasons.pagination.rows"),
+        pageLabel: t("seasons.pagination.page"),
+        previousLabel: t("seasons.pagination.previous"),
+        nextLabel: t("seasons.pagination.next"),
+        onPageChange: handlePageChange,
+      }}
+      searchPlaceholder={t("seasons.searchPlaceholder")}
+      filtersSlot={
         <div className="flex items-center gap-2">
           <Switch
             id="active-seasons-only"
@@ -129,56 +141,13 @@ export default function SeasonsPage() {
             {t("seasons.filters.activeOnly")}
           </Label>
         </div>
-
-        <div className="flex items-center gap-2">
-          <Switch
-            id="include-deleted-seasons"
-            checked={includeDeleted}
-            onCheckedChange={
-              handleIncludeDeletedChange
-            }
-          />
-
-          <Label htmlFor="include-deleted-seasons">
-            {t("seasons.filters.includeDeleted")}
-          </Label>
-        </div>
-      </div>
-
-      <EntityTable
-        columns={seasonColumns}
-        data={data?.items ?? []}
-        emptyStateLabel={t("seasons.empty")}
-      />
-
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">
-          {t("seasons.loading")}
-        </p>
-      ) : null}
-
-      {error instanceof Error ? (
-        <p className="text-sm text-destructive">
-          {t("seasons.errors.generic", { message: error.message })}
-        </p>
-      ) : null}
-
-      <EntityPagination
-        totalCount={totalCount}
-        page={currentPage}
-        totalPages={totalPages}
-        totalCountLabel={t("seasons.pagination.rows")}
-        pageLabel={t("seasons.pagination.page")}
-        previousLabel={t("seasons.pagination.previous")}
-        nextLabel={t("seasons.pagination.next")}
-        onPageChange={handlePageChange}
-      />
-
+      }
+    >
       <SeasonDialog
         mode="create"
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
       />
-    </div>
+    </EntityManagementPage>
   );
 }
