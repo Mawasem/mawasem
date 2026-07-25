@@ -12,6 +12,24 @@ public interface IOrderWorkflowService
             CancellationToken cancellationToken = default );
 
     Task<OrderWorkflowResult<OrderWorkflowResponse>>
+        PrepareAsync(
+            int orderId ,
+            int dashboardUserId ,
+            CancellationToken cancellationToken = default );
+
+    Task<OrderWorkflowResult<OrderWorkflowResponse>>
+        ShipAsync(
+            int orderId ,
+            int dashboardUserId ,
+            CancellationToken cancellationToken = default );
+
+    Task<OrderWorkflowResult<OrderWorkflowResponse>>
+        DeliverAsync(
+            int orderId ,
+            int dashboardUserId ,
+            CancellationToken cancellationToken = default );
+
+    Task<OrderWorkflowResult<OrderWorkflowResponse>>
         RejectAsync(
             int orderId ,
             int dashboardUserId ,

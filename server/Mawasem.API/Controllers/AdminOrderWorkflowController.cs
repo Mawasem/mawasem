@@ -56,6 +56,102 @@ public sealed class AdminOrderWorkflowController
         return Ok(result.Response);
     }
 
+    [HttpPut("{orderId:int}/prepare")]
+    [RequirePermission(
+        SystemPermissions.Orders.UpdateStatus)]
+    [ProducesResponseType(
+        typeof(OrderWorkflowResponse) ,
+        StatusCodes.Status200OK)]
+    public async Task<ActionResult<OrderWorkflowResponse>>
+        PrepareAsync(
+            int orderId ,
+            CancellationToken cancellationToken )
+    {
+        if ( !User.TryGetUserId(out var userId) )
+        {
+            return InvalidAuthenticationToken();
+        }
+
+        var result =
+            await _orderWorkflowService.PrepareAsync(
+                orderId ,
+                userId ,
+                cancellationToken);
+
+        if ( !result.Succeeded )
+        {
+            return CreateFailureResponse(
+                result.ErrorCode ,
+                result.ErrorMessage);
+        }
+
+        return Ok(result.Response);
+    }
+
+    [HttpPut("{orderId:int}/ship")]
+    [RequirePermission(
+        SystemPermissions.Orders.UpdateStatus)]
+    [ProducesResponseType(
+        typeof(OrderWorkflowResponse) ,
+        StatusCodes.Status200OK)]
+    public async Task<ActionResult<OrderWorkflowResponse>>
+        ShipAsync(
+            int orderId ,
+            CancellationToken cancellationToken )
+    {
+        if ( !User.TryGetUserId(out var userId) )
+        {
+            return InvalidAuthenticationToken();
+        }
+
+        var result =
+            await _orderWorkflowService.ShipAsync(
+                orderId ,
+                userId ,
+                cancellationToken);
+
+        if ( !result.Succeeded )
+        {
+            return CreateFailureResponse(
+                result.ErrorCode ,
+                result.ErrorMessage);
+        }
+
+        return Ok(result.Response);
+    }
+
+    [HttpPut("{orderId:int}/deliver")]
+    [RequirePermission(
+        SystemPermissions.Orders.UpdateStatus)]
+    [ProducesResponseType(
+        typeof(OrderWorkflowResponse) ,
+        StatusCodes.Status200OK)]
+    public async Task<ActionResult<OrderWorkflowResponse>>
+        DeliverAsync(
+            int orderId ,
+            CancellationToken cancellationToken )
+    {
+        if ( !User.TryGetUserId(out var userId) )
+        {
+            return InvalidAuthenticationToken();
+        }
+
+        var result =
+            await _orderWorkflowService.DeliverAsync(
+                orderId ,
+                userId ,
+                cancellationToken);
+
+        if ( !result.Succeeded )
+        {
+            return CreateFailureResponse(
+                result.ErrorCode ,
+                result.ErrorMessage);
+        }
+
+        return Ok(result.Response);
+    }
+
     [HttpPut("{orderId:int}/reject")]
     [RequirePermission(
         SystemPermissions.Orders.UpdateStatus)]
