@@ -1,1 +1,32 @@
-{}
+{
+  "roles.page.title": "Roles",
+  "roles.page.description": "Manage dashboard role permissions.",
+  "roles.searchPlaceholder": "Search roles",
+  "roles.filters.includeDeleted": "Include deleted",
+  "roles.empty": "No roles found.",
+  "roles.loading": "Loading roles...",
+  "roles.errors.generic": "Unable to load roles: {{message}}",
+  "roles.pagination.rows": "roles",
+  "roles.pagination.page": "Page",
+  "roles.pagination.previous": "Previous",
+  "roles.pagination.next": "Next",
+  "roles.table.headers.name": "Role",
+  "roles.table.headers.assignedUsers": "Assigned users",
+  "roles.table.headers.permissions": "Permissions",
+  "roles.table.headers.status": "Status",
+  "roles.table.headers.actions": "Actions",
+  "roles.table.emptyPermissions": "No permissions assigned",
+  "roles.status.protected": "Protected",
+  "roles.status.manageable": "Manageable",
+  "roles.actions.openActions": "Open role actions",
+  "roles.actions.managePermissions": "Manage permissions",
+  "roles.actions.create": "Add Role",
+  "roles.actions.savePermissions": "Save permissions",
+  "roles.dialog.title": "Manage permissions for {{roleName}}",
+  "roles.dialog.description": "Grant or revoke dashboard permissions for this role.",
+  "roles.dialog.roleSummary": "Required permissions stay enabled and cannot be removed.",
+  "roles.permissions.required": "Required",
+  "roles.permissions.selected": "Selected",
+  "roles.permissions.available": "Select"
+}
+

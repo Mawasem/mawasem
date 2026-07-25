@@ -1,1 +1,32 @@
-{}
+{
+  "roles.page.title": "الأدوار",
+  "roles.page.description": "إدارة صلاحيات أدوار لوحة التحكم.",
+  "roles.searchPlaceholder": "بحث في الأدوار",
+  "roles.filters.includeDeleted": "تضمين المحذوفات",
+  "roles.empty": "لا توجد أدوار.",
+  "roles.loading": "جارٍ تحميل الأدوار...",
+  "roles.errors.generic": "تعذر تحميل الأدوار: {{message}}",
+  "roles.pagination.rows": "أدوار",
+  "roles.pagination.page": "الصفحة",
+  "roles.pagination.previous": "السابق",
+  "roles.pagination.next": "التالي",
+  "roles.table.headers.name": "الدور",
+  "roles.table.headers.assignedUsers": "المستخدمون المعينون",
+  "roles.table.headers.permissions": "الصلاحيات",
+  "roles.table.headers.status": "الحالة",
+  "roles.table.headers.actions": "الإجراءات",
+  "roles.table.emptyPermissions": "لا توجد صلاحيات معينة",
+  "roles.status.protected": "محمي",
+  "roles.status.manageable": "قابل للإدارة",
+  "roles.actions.openActions": "فتح إجراءات الدور",
+  "roles.actions.managePermissions": "إدارة الصلاحيات",
+  "roles.actions.create": "إضافة دور",
+  "roles.actions.savePermissions": "حفظ الصلاحيات",
+  "roles.dialog.title": "إدارة صلاحيات {{roleName}}",
+  "roles.dialog.description": "منح أو سحب صلاحيات لوحة التحكم لهذا الدور.",
+  "roles.dialog.roleSummary": "البنود المطلوبة تبقى مفعلة ولا يمكن إزالتها.",
+  "roles.permissions.required": "مطلوب",
+  "roles.permissions.selected": "محدد",
+  "roles.permissions.available": "تحديد"
+}
+
