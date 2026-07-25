@@ -3,7 +3,10 @@ import { getCustomer } from "../api/get-customer";
 import type { CustomerDetails } from "../types";
 
 
-export const useCustomer = (customerId: number) => {
+export const useCustomer = (
+  customerId: number,
+  enabled = true
+) => {
   const {
     data: customerData,
     isPending: isLoading,
@@ -11,7 +14,7 @@ export const useCustomer = (customerId: number) => {
   } = useQuery<CustomerDetails>({
     queryKey: ["customer", customerId],
     queryFn: () => getCustomer(customerId),
-    enabled: !!customerId,
+    enabled: enabled && !!customerId,
   });
 
   return {

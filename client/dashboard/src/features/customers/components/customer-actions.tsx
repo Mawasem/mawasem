@@ -12,6 +12,7 @@ import {
 
 import type { CustomerActionsProps } from "../types";
 import { BlockCustomerDialog } from "./block-customer-dialog";
+import { CustomerDetailsDialog } from "./customer-details-dialog";
 import { UnblockCustomerDialog } from "./unblock-customer-dialog";
 
 export function CustomerActions({
@@ -22,6 +23,8 @@ export function CustomerActions({
   const [isBlockDialogOpen, setIsBlockDialogOpen] =
     useState(false);
   const [isUnblockDialogOpen, setIsUnblockDialogOpen] =
+    useState(false);
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] =
     useState(false);
 
   return (
@@ -38,6 +41,12 @@ export function CustomerActions({
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() => setIsDetailsDialogOpen(true)}
+          >
+            {t("customers.actions.viewDetails")}
+          </DropdownMenuItem>
+
           {customer.isBlocked ? (
             <DropdownMenuItem
               onClick={() =>
@@ -58,6 +67,12 @@ export function CustomerActions({
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <CustomerDetailsDialog
+        customer={customer}
+        open={isDetailsDialogOpen}
+        onOpenChange={setIsDetailsDialogOpen}
+      />
 
       <BlockCustomerDialog
         customer={customer}
