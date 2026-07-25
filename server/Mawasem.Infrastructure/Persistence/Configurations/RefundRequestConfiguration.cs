@@ -8,51 +8,120 @@ namespace Mawasem.Infrastructure.Persistence.Configurations;
 public class RefundRequestConfiguration
     : IEntityTypeConfiguration<RefundRequest>
 {
-    public void Configure( EntityTypeBuilder<RefundRequest> builder )
+    public void Configure(
+        EntityTypeBuilder<RefundRequest> builder )
     {
-        builder.ToTable("RefundRequests");
+        builder.ToTable(
+            "RefundRequests" ,
+            tableBuilder =>
+            {
+                tableBuilder.HasCheckConstraint(
+                    "CK_RefundRequests_RefundAmount_NonNegative" ,
+                    "[RefundAmount] >= 0");
+            });
 
-        builder.HasKey(x => x.Id);
+        builder.HasKey(refundRequest =>
+            refundRequest.Id);
 
-        builder.Property(x => x.Status)
+        builder.Property(refundRequest =>
+                refundRequest.IdempotencyKey)
+            .HasMaxLength(100)
+            .IsRequired();
+
+        builder.Property(refundRequest =>
+                refundRequest.Status)
             .HasConversion<int>()
             .IsRequired();
 
-        builder.Property(x => x.CustomerReason)
-            .HasMaxLength(1000);
-
-        builder.Property(x => x.AdminNotes)
-            .HasMaxLength(2000);
-
-        builder.Property(x => x.RequestedAt)
+        builder.Property(refundRequest =>
+                refundRequest.CustomerReason)
+            .HasMaxLength(1000)
             .IsRequired();
 
-        builder.Property(x => x.ReviewedAt);
+        builder.Property(refundRequest =>
+                refundRequest.AdminNotes)
+            .HasMaxLength(2000);
 
-        builder.Property(x => x.ReviewedByEmployeeId);
+        builder.Property(refundRequest =>
+                refundRequest.RefundAmount)
+            .HasPrecision(18 , 2)
+            .IsRequired();
 
-        builder.HasOne(x => x.Order)
-            .WithMany(x => x.RefundRequests)
-            .HasForeignKey(x => x.OrderId)
+        builder.Property(refundRequest =>
+                refundRequest.RequestedAt)
+            .IsRequired();
+
+        builder.Property(refundRequest =>
+            refundRequest.ReviewedAt);
+
+        builder.Property(refundRequest =>
+            refundRequest.ReviewedByEmployeeId);
+
+        builder.Property(refundRequest =>
+            refundRequest.CompletedAt);
+
+        builder.Property(refundRequest =>
+            refundRequest.CompletedByEmployeeId);
+
+        builder.Property(refundRequest =>
+            refundRequest.StockRestoredAtUtc);
+
+        builder.HasOne(refundRequest =>
+                refundRequest.Order)
+            .WithMany(order =>
+                order.RefundRequests)
+            .HasForeignKey(refundRequest =>
+                refundRequest.OrderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Both employee relationships use NO ACTION in SQL Server.
+        // This avoids multiple cascading SET NULL paths to AspNetUsers.
+        builder.HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(refundRequest =>
+                refundRequest.ReviewedByEmployeeId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne<ApplicationUser>()
             .WithMany()
-            .HasForeignKey(x => x.ReviewedByEmployeeId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .HasForeignKey(refundRequest =>
+                refundRequest.CompletedByEmployeeId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(x => x.OrderId);
+        builder.HasIndex(refundRequest =>
+            refundRequest.OrderId);
 
-        builder.HasIndex(x => x.Status);
+        builder.HasIndex(refundRequest =>
+            refundRequest.Status);
 
-        builder.HasIndex(x => x.RequestedAt);
+        builder.HasIndex(refundRequest =>
+            refundRequest.RequestedAt);
 
-        builder.HasIndex(x => x.ReviewedByEmployeeId);
+        builder.HasIndex(refundRequest =>
+            refundRequest.ReviewedByEmployeeId);
 
-        builder.HasIndex(x => new
-        {
-            x.OrderId ,
-            x.Status
-        });
+        builder.HasIndex(refundRequest =>
+            refundRequest.CompletedByEmployeeId);
+
+        builder.HasIndex(refundRequest =>
+            refundRequest.CompletedAt);
+
+        builder.HasIndex(refundRequest =>
+            refundRequest.StockRestoredAtUtc);
+
+        builder.HasIndex(refundRequest =>
+            new
+            {
+                refundRequest.OrderId ,
+                refundRequest.Status
+            });
+
+        builder.HasIndex(refundRequest =>
+            new
+            {
+                refundRequest.OrderId ,
+                refundRequest.IdempotencyKey
+            })
+            .IsUnique();
     }
 }

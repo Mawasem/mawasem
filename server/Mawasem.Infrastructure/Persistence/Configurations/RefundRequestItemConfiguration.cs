@@ -7,7 +7,8 @@ namespace Mawasem.Infrastructure.Persistence.Configurations;
 public class RefundRequestItemConfiguration
     : IEntityTypeConfiguration<RefundRequestItem>
 {
-    public void Configure( EntityTypeBuilder<RefundRequestItem> builder )
+    public void Configure(
+        EntityTypeBuilder<RefundRequestItem> builder )
     {
         builder.ToTable(
             "RefundRequestItems" ,
@@ -16,39 +17,82 @@ public class RefundRequestItemConfiguration
                 tableBuilder.HasCheckConstraint(
                     "CK_RefundRequestItems_Quantity_Positive" ,
                     "[Quantity] > 0");
+
+                tableBuilder.HasCheckConstraint(
+                    "CK_RefundRequestItems_ReturnedQuantity_Valid" ,
+                    "[ReturnedQuantity] >= 0 AND " +
+                    "[ReturnedQuantity] <= [Quantity]");
+
+                tableBuilder.HasCheckConstraint(
+                    "CK_RefundRequestItems_RestockQuantity_Valid" ,
+                    "[RestockQuantity] >= 0 AND " +
+                    "[RestockQuantity] <= [ReturnedQuantity]");
+
+                tableBuilder.HasCheckConstraint(
+                    "CK_RefundRequestItems_UnitRefundAmount_NonNegative" ,
+                    "[UnitRefundAmount] >= 0");
+
+                tableBuilder.HasCheckConstraint(
+                    "CK_RefundRequestItems_TotalRefundAmount_NonNegative" ,
+                    "[TotalRefundAmount] >= 0");
             });
 
-        builder.HasKey(x => x.Id);
+        builder.HasKey(refundRequestItem =>
+            refundRequestItem.Id);
 
-        builder.Property(x => x.Quantity)
+        builder.Property(refundRequestItem =>
+                refundRequestItem.Quantity)
             .IsRequired();
 
-        builder.Property(x => x.Reason)
+        builder.Property(refundRequestItem =>
+                refundRequestItem.ReturnedQuantity)
+            .IsRequired();
+
+        builder.Property(refundRequestItem =>
+                refundRequestItem.RestockQuantity)
+            .IsRequired();
+
+        builder.Property(refundRequestItem =>
+                refundRequestItem.Reason)
             .HasMaxLength(1000);
 
-        // Deleting a refund request deletes its request items.
-        builder.HasOne(x => x.RefundRequest)
-            .WithMany(x => x.Items)
-            .HasForeignKey(x => x.RefundRequestId)
+        builder.Property(refundRequestItem =>
+                refundRequestItem.UnitRefundAmount)
+            .HasPrecision(18 , 2)
+            .IsRequired();
+
+        builder.Property(refundRequestItem =>
+                refundRequestItem.TotalRefundAmount)
+            .HasPrecision(18 , 2)
+            .IsRequired();
+
+        builder.HasOne(refundRequestItem =>
+                refundRequestItem.RefundRequest)
+            .WithMany(refundRequest =>
+                refundRequest.Items)
+            .HasForeignKey(refundRequestItem =>
+                refundRequestItem.RefundRequestId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Historical order items must remain available.
-        builder.HasOne(x => x.OrderItem)
+        builder.HasOne(refundRequestItem =>
+                refundRequestItem.OrderItem)
             .WithMany()
-            .HasForeignKey(x => x.OrderItemId)
+            .HasForeignKey(refundRequestItem =>
+                refundRequestItem.OrderItemId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(x => x.RefundRequestId);
+        builder.HasIndex(refundRequestItem =>
+            refundRequestItem.RefundRequestId);
 
-        builder.HasIndex(x => x.OrderItemId);
+        builder.HasIndex(refundRequestItem =>
+            refundRequestItem.OrderItemId);
 
-        // The same order item cannot appear twice
-        // in the same refund request.
-        builder.HasIndex(x => new
-        {
-            x.RefundRequestId ,
-            x.OrderItemId
-        })
-        .IsUnique();
+        builder.HasIndex(refundRequestItem =>
+            new
+            {
+                refundRequestItem.RefundRequestId ,
+                refundRequestItem.OrderItemId
+            })
+            .IsUnique();
     }
 }
