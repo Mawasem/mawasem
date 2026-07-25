@@ -1,1 +1,52 @@
-{}
+{
+  "collections.page.title": "Collections",
+  "collections.page.description": "Manage product collections.",
+
+  "collections.loading": "Loading collections...",
+  "collections.empty": "No collections found.",
+
+  "collections.searchPlaceholder": "Search collections...",
+
+  "collections.filters.includeDeleted": "Include deleted collections",
+
+  "collections.actions.create": "Add Collection",
+  "collections.actions.edit": "Edit Collection",
+  "collections.actions.delete": "Delete Collection",
+  "collections.actions.restore": "Restore Collection",
+
+  "collections.dialog.createTitle": "Create Collection",
+  "collections.dialog.createDescription": "Create a new collection for your catalogue.",
+  "collections.dialog.editTitle": "Edit Collection",
+  "collections.dialog.editDescription": "Update the selected collection.",
+
+  "collections.form.nameAr": "Arabic Name",
+  "collections.form.nameEn": "English Name",
+  "collections.form.season": "Season",
+  "collections.form.selectSeason": "Select a season",
+
+  "collections.validation.nameAr": "Arabic name is required.",
+  "collections.validation.nameEn": "English name is required.",
+  "collections.validation.season": "Please select a season.",
+
+  "collections.table.headers.nameAr": "Arabic Name",
+  "collections.table.headers.nameEn": "English Name",
+  "collections.table.headers.season": "Season",
+  "collections.table.headers.status": "Status",
+  "collections.table.headers.actions": "Actions",
+
+  "collections.status.active": "Active",
+  "collections.status.deleted": "Deleted",
+
+  "collections.delete.title": "Delete Collection",
+  "collections.delete.description": "Are you sure you want to delete this collection? This action can be undone later by restoring it.",
+  "collections.delete.confirm": "Delete",
+
+  "collections.restore.title": "Restore Collection",
+  "collections.restore.description": "Are you sure you want to restore this collection?",
+  "collections.restore.confirm": "Restore",
+
+  "collections.pagination.rows": "Collections",
+  "collections.pagination.page": "Page",
+  "collections.pagination.previous": "Previous",
+  "collections.pagination.next": "Next"
+}

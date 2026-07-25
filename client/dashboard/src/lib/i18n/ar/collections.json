@@ -1,1 +1,52 @@
-{}
+{
+  "collections.page.title": "المجموعات",
+  "collections.page.description": "إدارة مجموعات المنتجات.",
+
+  "collections.loading": "جارٍ تحميل المجموعات...",
+  "collections.empty": "لا توجد مجموعات.",
+
+  "collections.searchPlaceholder": "ابحث عن مجموعة...",
+
+  "collections.filters.includeDeleted": "إظهار المجموعات المحذوفة",
+
+  "collections.actions.create": "إضافة مجموعة",
+  "collections.actions.edit": "تعديل المجموعة",
+  "collections.actions.delete": "حذف المجموعة",
+  "collections.actions.restore": "استعادة المجموعة",
+
+  "collections.dialog.createTitle": "إضافة مجموعة",
+  "collections.dialog.createDescription": "أنشئ مجموعة جديدة للكتالوج.",
+  "collections.dialog.editTitle": "تعديل المجموعة",
+  "collections.dialog.editDescription": "قم بتعديل بيانات المجموعة.",
+
+  "collections.form.nameAr": "الاسم بالعربية",
+  "collections.form.nameEn": "الاسم بالإنجليزية",
+  "collections.form.season": "الموسم",
+  "collections.form.selectSeason": "اختر الموسم",
+
+  "collections.validation.nameAr": "الاسم بالعربية مطلوب.",
+  "collections.validation.nameEn": "الاسم بالإنجليزية مطلوب.",
+  "collections.validation.season": "يرجى اختيار الموسم.",
+
+  "collections.table.headers.nameAr": "الاسم بالعربية",
+  "collections.table.headers.nameEn": "الاسم بالإنجليزية",
+  "collections.table.headers.season": "الموسم",
+  "collections.table.headers.status": "الحالة",
+  "collections.table.headers.actions": "الإجراءات",
+
+  "collections.status.active": "نشط",
+  "collections.status.deleted": "محذوف",
+
+  "collections.delete.title": "حذف المجموعة",
+  "collections.delete.description": "هل أنت متأكد من حذف هذه المجموعة؟ يمكنك استعادتها لاحقًا.",
+  "collections.delete.confirm": "حذف",
+
+  "collections.restore.title": "استعادة المجموعة",
+  "collections.restore.description": "هل أنت متأكد من استعادة هذه المجموعة؟",
+  "collections.restore.confirm": "استعادة",
+
+  "collections.pagination.rows": "المجموعات",
+  "collections.pagination.page": "الصفحة",
+  "collections.pagination.previous": "السابق",
+  "collections.pagination.next": "التالي"
+}
