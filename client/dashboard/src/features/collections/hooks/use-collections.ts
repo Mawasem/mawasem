@@ -7,7 +7,7 @@ export const useCollections = (
   params: CollectionQueryParams
 ) => {
   const {
-    data: collectionsData,
+    data,
     isPending: isLoading,
     error,
   } = useQuery({
@@ -16,7 +16,7 @@ export const useCollections = (
   });
 
   return {
-    collectionsData,
+    data,
     isLoading,
     error,
   };

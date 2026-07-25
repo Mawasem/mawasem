@@ -5,6 +5,7 @@ export interface Collection {
   seasonId: number;
   seasonNameAr: string;
   seasonNameEn: string;
+  productCount: number;
   isDeleted: boolean;
 }
 
