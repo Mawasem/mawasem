@@ -23,7 +23,8 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
             tableBuilder.HasCheckConstraint(
                 "CK_Orders_OrderStatus" ,
-                "[OrderStatus] IN (1, 2, 3, 4, 5, 6, 7, 8, 9)");
+                "[OrderStatus] IN " +
+                "(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)");
 
             tableBuilder.HasCheckConstraint(
                 "CK_Orders_PaymentMethod" ,
@@ -31,7 +32,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
             tableBuilder.HasCheckConstraint(
                 "CK_Orders_PaymentStatus" ,
-                "[PaymentStatus] IN (1, 2, 3, 4)");
+                "[PaymentStatus] IN (1, 2, 3, 4, 5)");
 
             tableBuilder.HasCheckConstraint(
                 "CK_Orders_DeliveryMethod" ,

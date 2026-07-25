@@ -16,6 +16,7 @@ using Mawasem.Application.Features.Employees.Interfaces;
 using Mawasem.Application.Features.Orders.Interfaces;
 using Mawasem.Application.Features.Products.Interfaces;
 using Mawasem.Application.Features.PublicCatalog.Interfaces;
+using Mawasem.Application.Features.Refunds.Interfaces;
 using Mawasem.Application.Features.Roles.Interfaces;
 using Mawasem.Application.Features.Seasons.Interfaces;
 using Mawasem.Domain.Identity;
@@ -34,6 +35,7 @@ using Mawasem.Infrastructure.Persistence.Contexts;
 using Mawasem.Infrastructure.Persistence.Seed;
 using Mawasem.Infrastructure.Products;
 using Mawasem.Infrastructure.PublicCatalog;
+using Mawasem.Infrastructure.Refunds;
 using Mawasem.Infrastructure.Roles;
 using Mawasem.Infrastructure.Seasons;
 using Mawasem.Infrastructure.Storage.Images;
@@ -351,6 +353,10 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IOrderWorkflowService ,
     OrderWorkflowService>();
+
+builder.Services.AddScoped<
+    IRefundRequestService ,
+    RefundRequestService>();
 
 builder.Services.AddScoped<
     IBrandManagementService ,

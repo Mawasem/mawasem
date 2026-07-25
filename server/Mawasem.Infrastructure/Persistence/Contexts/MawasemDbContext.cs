@@ -97,6 +97,10 @@ public class MawasemDbContext
     public DbSet<RefundRequestItem> RefundRequestItems =>
         Set<RefundRequestItem>();
 
+    public DbSet<RefundPaymentTransaction>
+        RefundPaymentTransactions =>
+            Set<RefundPaymentTransaction>();
+
     #endregion
 
     #region Authentication

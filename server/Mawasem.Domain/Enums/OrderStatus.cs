@@ -10,5 +10,6 @@ public enum OrderStatus
     Cancelled = 6,
     RefundRequested = 7,
     Refunded = 8,
-    Rejected = 9
+    Rejected = 9,
+    PartiallyRefunded = 10
 }
