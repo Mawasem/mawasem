@@ -345,6 +345,10 @@ builder.Services.AddScoped<
     DeliveryAreaService>();
 
 builder.Services.AddScoped<
+    IOrderQueryService ,
+    OrderQueryService>();
+
+builder.Services.AddScoped<
     IOrderWorkflowService ,
     OrderWorkflowService>();
 
