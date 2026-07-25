@@ -24,13 +24,18 @@ export function useRoleColumns() {
         accessorKey: "permissionNames",
         header: t("roles.table.headers.permissions"),
         cell: ({ row }) => {
-          const permissionNames = row.original.permissionNames;
+          const permissionCount = row.original.permissionNames.length;
+
+          const summaryKey =
+            permissionCount === 0
+              ? "roles.table.permissionSummary.empty"
+              : permissionCount === 1
+                ? "roles.table.permissionSummary.one"
+                : "roles.table.permissionSummary.other";
 
           return (
-            <span className="text-sm text-muted-foreground">
-              {permissionNames.length > 0
-                ? permissionNames.join(", ")
-                : t("roles.table.emptyPermissions")}
+            <span className="whitespace-nowrap text-sm text-muted-foreground">
+              {t(summaryKey, { count: permissionCount })}
             </span>
           );
         },
