@@ -14,20 +14,142 @@ namespace Mawasem.API.Controllers;
 [Authorize(Roles = SystemRoles.Customer)]
 public sealed class OrdersController : ControllerBase
 {
+    private readonly IOrderQueryService
+        _orderQueryService;
+
     private readonly IOrderWorkflowService
         _orderWorkflowService;
 
     public OrdersController(
+        IOrderQueryService orderQueryService ,
         IOrderWorkflowService orderWorkflowService )
     {
+        _orderQueryService =
+            orderQueryService;
+
         _orderWorkflowService =
             orderWorkflowService;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(
+        typeof(CustomerOrderListResponse) ,
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<CustomerOrderListResponse>>
+        GetListAsync(
+            [FromQuery] GetCustomerOrdersRequest request ,
+            CancellationToken cancellationToken )
+    {
+        if ( !User.TryGetUserId(out var userId) )
+        {
+            return InvalidAuthenticationToken();
+        }
+
+        var result =
+            await _orderQueryService.GetCustomerListAsync(
+                userId ,
+                request ,
+                cancellationToken);
+
+        if ( !result.Succeeded )
+        {
+            return CreateQueryFailureResponse(
+                result.ErrorCode ,
+                result.ErrorMessage);
+        }
+
+        if ( result.Response is null )
+        {
+            return UnexpectedQueryResponseFailure();
+        }
+
+        return Ok(result.Response);
+    }
+
+    [HttpGet("{orderId:int}")]
+    [ProducesResponseType(
+        typeof(CustomerOrderDetailsResponse) ,
+        StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status404NotFound)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<CustomerOrderDetailsResponse>>
+        GetDetailsAsync(
+            int orderId ,
+            CancellationToken cancellationToken )
+    {
+        if ( !User.TryGetUserId(out var userId) )
+        {
+            return InvalidAuthenticationToken();
+        }
+
+        var result =
+            await _orderQueryService.GetCustomerDetailsAsync(
+                userId ,
+                orderId ,
+                cancellationToken);
+
+        if ( !result.Succeeded )
+        {
+            return CreateQueryFailureResponse(
+                result.ErrorCode ,
+                result.ErrorMessage);
+        }
+
+        if ( result.Response is null )
+        {
+            return UnexpectedQueryResponseFailure();
+        }
+
+        return Ok(result.Response);
     }
 
     [HttpPut("{orderId:int}/cancel")]
     [ProducesResponseType(
         typeof(OrderWorkflowResponse) ,
         StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status404NotFound)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status409Conflict)]
+    [ProducesResponseType(
+        typeof(ProblemDetails) ,
+        StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<OrderWorkflowResponse>>
         CancelAsync(
             int orderId ,
@@ -49,7 +171,7 @@ public sealed class OrdersController : ControllerBase
 
         if ( !result.Succeeded )
         {
-            return CreateFailureResponse(
+            return CreateWorkflowFailureResponse(
                 result.ErrorCode ,
                 result.ErrorMessage);
         }
@@ -59,18 +181,98 @@ public sealed class OrdersController : ControllerBase
 
     private ObjectResult InvalidAuthenticationToken()
     {
-        return Problem(
-            statusCode:
+        var problemDetails = new ProblemDetails
+        {
+            Status =
                 StatusCodes.Status401Unauthorized ,
 
-            title:
+            Title =
                 "Invalid authentication token." ,
 
-            detail:
-                "The authenticated customer identifier is invalid.");
+            Detail =
+                "The authenticated customer identifier is invalid."
+        };
+
+        problemDetails.Extensions["code"] =
+            OrderQueryErrorCodes.CustomerNotFound;
+
+        return StatusCode(
+            StatusCodes.Status401Unauthorized ,
+            problemDetails);
     }
 
-    private ObjectResult CreateFailureResponse(
+    private ObjectResult CreateQueryFailureResponse(
+        string? errorCode ,
+        string? errorMessage )
+    {
+        var statusCode = errorCode switch
+        {
+            OrderQueryErrorCodes.InvalidRequest =>
+                StatusCodes.Status400BadRequest,
+
+            OrderQueryErrorCodes.CustomerNotFound =>
+                StatusCodes.Status401Unauthorized,
+
+            OrderQueryErrorCodes.CustomerBlocked =>
+                StatusCodes.Status403Forbidden,
+
+            OrderQueryErrorCodes.OrderNotFound =>
+                StatusCodes.Status404NotFound,
+
+            OrderQueryErrorCodes.OrderAccessDenied =>
+                StatusCodes.Status403Forbidden,
+
+            OrderQueryErrorCodes.OperationFailed =>
+                StatusCodes.Status500InternalServerError,
+
+            _ =>
+                StatusCodes.Status500InternalServerError
+        };
+
+        var problemDetails = new ProblemDetails
+        {
+            Status = statusCode ,
+
+            Title =
+                "Customer order query failed." ,
+
+            Detail =
+                errorMessage ??
+                "The customer order request could not be completed."
+        };
+
+        problemDetails.Extensions["code"] =
+            errorCode ??
+            OrderQueryErrorCodes.OperationFailed;
+
+        return StatusCode(
+            statusCode ,
+            problemDetails);
+    }
+
+    private ObjectResult UnexpectedQueryResponseFailure()
+    {
+        var problemDetails = new ProblemDetails
+        {
+            Status =
+                StatusCodes.Status500InternalServerError ,
+
+            Title =
+                "Customer order response failed." ,
+
+            Detail =
+                "The order query succeeded, but its response could not be returned."
+        };
+
+        problemDetails.Extensions["code"] =
+            "orders.response_failed";
+
+        return StatusCode(
+            StatusCodes.Status500InternalServerError ,
+            problemDetails);
+    }
+
+    private ObjectResult CreateWorkflowFailureResponse(
         string? errorCode ,
         string? errorMessage )
     {
