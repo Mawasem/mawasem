@@ -73,6 +73,7 @@ public static class SystemPermissions
     public static class Reviews
     {
         public const string View = "Reviews.View";
+        public const string Moderate = "Reviews.Moderate";
         public const string Delete = "Reviews.Delete";
     }
 
@@ -180,6 +181,7 @@ public static class SystemPermissions
             Refunds.Reject,
 
             Reviews.View,
+            Reviews.Moderate,
             Reviews.Delete,
 
             Customers.View,

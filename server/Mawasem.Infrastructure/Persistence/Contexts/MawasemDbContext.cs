@@ -3,6 +3,7 @@ using Mawasem.Domain.Catalog;
 using Mawasem.Domain.Delivery;
 using Mawasem.Domain.Identity;
 using Mawasem.Domain.Orders;
+using Mawasem.Domain.Reviews;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -100,6 +101,13 @@ public class MawasemDbContext
     public DbSet<RefundPaymentTransaction>
         RefundPaymentTransactions =>
             Set<RefundPaymentTransaction>();
+
+    #endregion
+
+    #region Reviews
+
+    public DbSet<Review> Reviews =>
+        Set<Review>();
 
     #endregion
 

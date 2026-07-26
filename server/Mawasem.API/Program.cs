@@ -17,6 +17,7 @@ using Mawasem.Application.Features.Orders.Interfaces;
 using Mawasem.Application.Features.Products.Interfaces;
 using Mawasem.Application.Features.PublicCatalog.Interfaces;
 using Mawasem.Application.Features.Refunds.Interfaces;
+using Mawasem.Application.Features.Reviews.Interfaces;
 using Mawasem.Application.Features.Roles.Interfaces;
 using Mawasem.Application.Features.Seasons.Interfaces;
 using Mawasem.Domain.Identity;
@@ -36,6 +37,7 @@ using Mawasem.Infrastructure.Persistence.Seed;
 using Mawasem.Infrastructure.Products;
 using Mawasem.Infrastructure.PublicCatalog;
 using Mawasem.Infrastructure.Refunds;
+using Mawasem.Infrastructure.Reviews;
 using Mawasem.Infrastructure.Roles;
 using Mawasem.Infrastructure.Seasons;
 using Mawasem.Infrastructure.Storage.Images;
@@ -359,6 +361,10 @@ builder.Services.AddScoped<
     RefundRequestService>();
 
 builder.Services.AddScoped<
+    IReviewService ,
+    ReviewService>();
+
+builder.Services.AddScoped<
     IBrandManagementService ,
     BrandManagementService>();
 
@@ -487,6 +493,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
 public partial class Program
 {
 }

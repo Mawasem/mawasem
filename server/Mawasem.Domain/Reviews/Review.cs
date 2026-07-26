@@ -16,4 +16,14 @@ public class Review : BaseAuditableEntity
     public int Rating { get; set; }
 
     public string Comment { get; set; } = string.Empty;
+
+    public bool IsVisible { get; set; } = true;
+
+    public string? ModerationReason { get; set; }
+
+    public DateTimeOffset? ModeratedAtUtc { get; set; }
+
+    public int? ModeratedByEmployeeId { get; set; }
+
+    public ApplicationUser? ModeratedByEmployee { get; set; }
 }

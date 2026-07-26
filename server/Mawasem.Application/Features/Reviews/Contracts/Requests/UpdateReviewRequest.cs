@@ -1,0 +1,9 @@
+﻿namespace Mawasem.Application.Features.Reviews.Contracts.Requests;
+
+public sealed record UpdateReviewRequest
+{
+    public int Rating { get; init; }
+
+    public string Comment { get; init; } =
+        string.Empty;
+}
