@@ -92,6 +92,9 @@ public class MawasemDbContext
     public DbSet<OrderItem> OrderItems =>
         Set<OrderItem>();
 
+    public DbSet<OrderStatusHistory> OrderStatusHistories =>
+        Set<OrderStatusHistory>();
+
     public DbSet<RefundRequest> RefundRequests =>
         Set<RefundRequest>();
 

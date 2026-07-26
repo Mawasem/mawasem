@@ -1,4 +1,4 @@
-﻿using Mawasem.Domain.Carts;
+using Mawasem.Domain.Carts;
 using Mawasem.Domain.Catalog;
 using Mawasem.Domain.Common.ValueObjects;
 using Mawasem.Domain.Delivery;
@@ -6,6 +6,7 @@ using Mawasem.Domain.Enums;
 using Mawasem.Domain.Identity;
 using Mawasem.Infrastructure.Persistence.Contexts;
 using Microsoft.Data.Sqlite;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mawasem.Tests.Checkout;
@@ -16,6 +17,10 @@ internal sealed class CheckoutTestDatabase
     internal const int CustomerId = 1;
 
     internal const int OtherCustomerId = 2;
+
+    internal const int DashboardUserId = 50;
+
+    internal const int DashboardRoleId = 500;
 
     internal const int ProductId = 100;
 
@@ -124,6 +129,45 @@ internal sealed class CheckoutTestDatabase
                     Guid.NewGuid().ToString()
             };
 
+        var dashboardUser =
+            new ApplicationUser
+            {
+                Id =
+                    DashboardUserId ,
+
+                UserName =
+                    "dashboard-user" ,
+
+                NormalizedUserName =
+                    "DASHBOARD-USER" ,
+
+                PhoneNumber =
+                    "01000000050" ,
+
+                FullNameAr =
+                    "موظف اختبار" ,
+
+                FullNameEn =
+                    "Test Dashboard Employee" ,
+
+                SecurityStamp =
+                    Guid.NewGuid().ToString()
+            };
+        var dashboardRole =
+            new ApplicationRole
+            {
+                Id =
+                    DashboardRoleId ,
+
+                Name =
+                    SystemRoles.Admin ,
+
+                NormalizedName =
+                    SystemRoles.Admin.ToUpperInvariant() ,
+
+                ConcurrencyStamp =
+                    Guid.NewGuid().ToString()
+            };
         var brand =
             new Brand
             {
@@ -285,8 +329,21 @@ internal sealed class CheckoutTestDatabase
 
         dbContext.Users.AddRange(
             customer ,
-            otherCustomer);
+            otherCustomer ,
+            dashboardUser);
 
+        dbContext.Roles.Add(
+            dashboardRole);
+
+        dbContext.UserRoles.Add(
+            new IdentityUserRole<int>
+            {
+                UserId =
+                    DashboardUserId ,
+
+                RoleId =
+                    DashboardRoleId
+            });
         dbContext.DeliveryAreas.Add(
             deliveryArea);
 
