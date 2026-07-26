@@ -135,6 +135,14 @@ public sealed partial class OrderWorkflowService
             order.OrderStatus =
                 targetStatus;
 
+            RecordStatusChange(
+                order ,
+                previousStatus ,
+                targetStatus ,
+                dashboardUserId ,
+                OrderStatusChangeActorType.DashboardUser ,
+                now);
+
             MarkModified(
                 order ,
                 now ,

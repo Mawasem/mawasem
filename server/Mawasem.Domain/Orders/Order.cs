@@ -104,6 +104,8 @@ public class Order : BaseAuditableEntity
     public ICollection<OrderItem> OrderItems { get; set; } =
         new List<OrderItem>();
 
+    public ICollection<OrderStatusHistory> StatusHistory { get; set; } =
+        new List<OrderStatusHistory>();
     public ICollection<RefundRequest> RefundRequests { get; set; } =
         new List<RefundRequest>();
 }

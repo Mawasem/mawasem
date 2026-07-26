@@ -214,6 +214,23 @@ public sealed partial class OrderWorkflowService
                 }
             }
 
+            if ( statusChanged )
+            {
+                var actorType =
+                    customerUserId.HasValue
+                        ? OrderStatusChangeActorType.Customer
+                        : OrderStatusChangeActorType.DashboardUser;
+
+                RecordStatusChange(
+                    order ,
+                    previousStatus ,
+                    targetStatus ,
+                    actorUserId ,
+                    actorType ,
+                    now ,
+                    normalizedReason);
+            }
+
             if ( statusChanged ||
                 stockRestored )
             {

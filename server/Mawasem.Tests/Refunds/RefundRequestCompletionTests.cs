@@ -680,6 +680,14 @@ public sealed class RefundRequestCompletionTests
         await using var dbContext =
             database.CreateContext();
 
+        if ( await dbContext.Users
+            .AnyAsync(
+                candidate =>
+                    candidate.Id ==
+                    DashboardUserId) )
+        {
+            return;
+        }
         dbContext.Users.Add(
             new ApplicationUser
             {
