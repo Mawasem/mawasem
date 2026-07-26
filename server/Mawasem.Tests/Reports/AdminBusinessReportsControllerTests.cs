@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Mawasem.API.Authorization;
 using Mawasem.API.Controllers;
 using Mawasem.Application.Features.Reports.Contracts.Requests;
@@ -11,48 +11,47 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Mawasem.Tests.Reports;
 
-public sealed class AdminReportsControllerTests
+public sealed class AdminBusinessReportsControllerTests
 {
     [Fact]
     public async Task
-        GetEmployeeSummary_Success_ReturnsOkResponse()
+        GetDashboard_Success_ReturnsOkResponse()
     {
         var response =
-            new EmployeeReportSummaryResponse
+            new BusinessDashboardResponse
             {
-                Items =
-                    Array.Empty<
-                        EmployeeReportSummaryItemResponse>() ,
+                TotalOrders =
+                    10 ,
 
-                PageNumber =
-                    1 ,
+                DeliveredOrders =
+                    4 ,
 
-                PageSize =
-                    20 ,
+                GrossSales =
+                    500m ,
 
-                TotalCount =
-                    0 ,
+                CompletedRefundAmount =
+                    50m ,
 
-                TotalPages =
-                    0
+                NetRevenue =
+                    450m
             };
 
         var reportService =
             new StubReportService
             {
-                EmployeeSummaryResult =
+                BusinessDashboardResult =
                     ReportResult<
-                        EmployeeReportSummaryResponse>.Success(
+                        BusinessDashboardResponse>.Success(
                             response)
             };
 
         var controller =
-            new AdminReportsController(
+            new AdminBusinessReportsController(
                 reportService);
 
         var result =
-            await controller.GetEmployeeSummary(
-                new GetEmployeeReportRequest() ,
+            await controller.GetDashboard(
+                new GetBusinessDashboardRequest() ,
                 CancellationToken.None);
 
         var okResult =
@@ -66,25 +65,25 @@ public sealed class AdminReportsControllerTests
 
     [Fact]
     public async Task
-        GetEmployeeSummary_InvalidRequest_ReturnsBadRequestProblem()
+        GetDashboard_InvalidDateRange_ReturnsBadRequestProblem()
     {
         var reportService =
             new StubReportService
             {
-                EmployeeSummaryResult =
+                BusinessDashboardResult =
                     ReportResult<
-                        EmployeeReportSummaryResponse>.Failure(
-                            ReportErrorCodes.InvalidRequest ,
-                            "Page size is invalid.")
+                        BusinessDashboardResponse>.Failure(
+                            ReportErrorCodes.InvalidDateRange ,
+                            "The start date cannot be later than the end date.")
             };
 
         var controller =
-            new AdminReportsController(
+            new AdminBusinessReportsController(
                 reportService);
 
         var result =
-            await controller.GetEmployeeSummary(
-                new GetEmployeeReportRequest() ,
+            await controller.GetDashboard(
+                new GetBusinessDashboardRequest() ,
                 CancellationToken.None);
 
         var objectResult =
@@ -104,37 +103,83 @@ public sealed class AdminReportsControllerTests
             problemDetails.Status);
 
         Assert.Equal(
-            "Page size is invalid." ,
+            "The start date cannot be later than the end date." ,
             problemDetails.Detail);
 
         Assert.Equal(
-            ReportErrorCodes.InvalidRequest ,
+            ReportErrorCodes.InvalidDateRange ,
             Assert.IsType<string>(
                 problemDetails.Extensions["code"]));
     }
 
     [Fact]
     public async Task
-        GetEmployeeOrderActions_EmployeeNotFound_ReturnsNotFoundProblem()
+        GetSalesOverTime_Success_ReturnsOkResponse()
+    {
+        var response =
+            new SalesOverTimeResponse
+            {
+                TotalDeliveredOrders =
+                    3 ,
+
+                TotalGrossSales =
+                    600m ,
+
+                TotalCompletedRefundAmount =
+                    100m ,
+
+                TotalNetRevenue =
+                    500m
+            };
+
+        var reportService =
+            new StubReportService
+            {
+                SalesOverTimeResult =
+                    ReportResult<
+                        SalesOverTimeResponse>.Success(
+                            response)
+            };
+
+        var controller =
+            new AdminBusinessReportsController(
+                reportService);
+
+        var result =
+            await controller.GetSalesOverTime(
+                new GetSalesOverTimeRequest() ,
+                CancellationToken.None);
+
+        var okResult =
+            Assert.IsType<OkObjectResult>(
+                result);
+
+        Assert.Same(
+            response ,
+            okResult.Value);
+    }
+
+    [Fact]
+    public async Task
+        GetSalesOverTime_OperationFailed_ReturnsInternalServerErrorProblem()
     {
         var reportService =
             new StubReportService
             {
-                EmployeeOrderActionsResult =
+                SalesOverTimeResult =
                     ReportResult<
-                        EmployeeOrderActionsResponse>.Failure(
-                            ReportErrorCodes.EmployeeNotFound ,
-                            "The dashboard employee was not found.")
+                        SalesOverTimeResponse>.Failure(
+                            ReportErrorCodes.OperationFailed ,
+                            "The sales report could not be generated.")
             };
 
         var controller =
-            new AdminReportsController(
+            new AdminBusinessReportsController(
                 reportService);
 
         var result =
-            await controller.GetEmployeeOrderActions(
-                999 ,
-                new GetEmployeeOrderActionsRequest() ,
+            await controller.GetSalesOverTime(
+                new GetSalesOverTimeRequest() ,
                 CancellationToken.None);
 
         var objectResult =
@@ -142,7 +187,7 @@ public sealed class AdminReportsControllerTests
                 result);
 
         Assert.Equal(
-            StatusCodes.Status404NotFound ,
+            StatusCodes.Status500InternalServerError ,
             objectResult.StatusCode);
 
         var problemDetails =
@@ -150,7 +195,15 @@ public sealed class AdminReportsControllerTests
                 objectResult.Value);
 
         Assert.Equal(
-            ReportErrorCodes.EmployeeNotFound ,
+            StatusCodes.Status500InternalServerError ,
+            problemDetails.Status);
+
+        Assert.Equal(
+            "The sales report could not be generated." ,
+            problemDetails.Detail);
+
+        Assert.Equal(
+            ReportErrorCodes.OperationFailed ,
             Assert.IsType<string>(
                 problemDetails.Extensions["code"]));
     }
@@ -160,7 +213,7 @@ public sealed class AdminReportsControllerTests
         Endpoints_HaveExpectedRoutesAndReportViewPermission()
     {
         var controllerType =
-            typeof(AdminReportsController);
+            typeof(AdminBusinessReportsController);
 
         var controllerRoute =
             controllerType.GetCustomAttribute<
@@ -170,69 +223,70 @@ public sealed class AdminReportsControllerTests
             controllerRoute);
 
         Assert.Equal(
-            "api/admin/reports/employees" ,
+            "api/admin/reports" ,
             controllerRoute!.Template);
 
-        var summaryMethod =
+        var dashboardMethod =
             controllerType.GetMethod(
                 nameof(
-                    AdminReportsController
-                        .GetEmployeeSummary));
+                    AdminBusinessReportsController
+                        .GetDashboard));
 
         Assert.NotNull(
-            summaryMethod);
+            dashboardMethod);
 
-        var summaryHttpGet =
-            summaryMethod!.GetCustomAttribute<
+        var dashboardHttpGet =
+            dashboardMethod!.GetCustomAttribute<
                 HttpGetAttribute>();
 
-        var summaryPermission =
-            summaryMethod.GetCustomAttribute<
+        var dashboardPermission =
+            dashboardMethod.GetCustomAttribute<
                 RequirePermissionAttribute>();
 
         Assert.NotNull(
-            summaryHttpGet);
+            dashboardHttpGet);
 
-        Assert.Null(
-            summaryHttpGet!.Template);
+        Assert.Equal(
+            "dashboard" ,
+            dashboardHttpGet!.Template);
 
         Assert.NotNull(
-            summaryPermission);
+            dashboardPermission);
 
         Assert.Equal(
             SystemPermissions.Reports.View ,
-            summaryPermission!.Policy);
+            dashboardPermission!.Policy);
 
-        var actionsMethod =
+        var salesMethod =
             controllerType.GetMethod(
                 nameof(
-                    AdminReportsController
-                        .GetEmployeeOrderActions));
+                    AdminBusinessReportsController
+                        .GetSalesOverTime));
 
         Assert.NotNull(
-            actionsMethod);
+            salesMethod);
 
-        var actionsHttpGet =
-            actionsMethod!.GetCustomAttribute<
+        var salesHttpGet =
+            salesMethod!.GetCustomAttribute<
                 HttpGetAttribute>();
 
-        var actionsPermission =
-            actionsMethod.GetCustomAttribute<
+        var salesPermission =
+            salesMethod.GetCustomAttribute<
                 RequirePermissionAttribute>();
 
         Assert.NotNull(
-            actionsHttpGet);
+            salesHttpGet);
 
         Assert.Equal(
-            "{employeeId:int}/order-actions" ,
-            actionsHttpGet!.Template);
+            "sales-over-time" ,
+            salesHttpGet!.Template);
 
         Assert.NotNull(
-            actionsPermission);
+            salesPermission);
 
         Assert.Equal(
             SystemPermissions.Reports.View ,
-            actionsPermission!.Policy);
+            salesPermission!.Policy);
     }
 
     private sealed class StubReportService
@@ -255,6 +309,13 @@ public sealed class AdminReportsControllerTests
                 ReportResult<
                     BusinessDashboardResponse>.Success(
                         new BusinessDashboardResponse());
+
+        public ReportResult<SalesOverTimeResponse>
+            SalesOverTimeResult { get; init; } =
+                ReportResult<
+                    SalesOverTimeResponse>.Success(
+                        new SalesOverTimeResponse());
+
         public Task<
             ReportResult<EmployeeReportSummaryResponse>>
             GetEmployeeSummaryAsync(
@@ -275,6 +336,7 @@ public sealed class AdminReportsControllerTests
             return Task.FromResult(
                 EmployeeOrderActionsResult);
         }
+
         public Task<
             ReportResult<BusinessDashboardResponse>>
             GetBusinessDashboardAsync(
@@ -284,11 +346,6 @@ public sealed class AdminReportsControllerTests
             return Task.FromResult(
                 BusinessDashboardResult);
         }
-        public ReportResult<SalesOverTimeResponse>
-            SalesOverTimeResult { get; init; } =
-                ReportResult<
-                    SalesOverTimeResponse>.Success(
-                        new SalesOverTimeResponse());
 
         public Task<
             ReportResult<SalesOverTimeResponse>>

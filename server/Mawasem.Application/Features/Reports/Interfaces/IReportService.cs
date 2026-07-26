@@ -16,4 +16,14 @@ public interface IReportService
             int employeeId ,
             GetEmployeeOrderActionsRequest request ,
             CancellationToken cancellationToken = default );
+
+    Task<ReportResult<BusinessDashboardResponse>>
+        GetBusinessDashboardAsync(
+            GetBusinessDashboardRequest request ,
+            CancellationToken cancellationToken = default );
+
+    Task<ReportResult<SalesOverTimeResponse>>
+        GetSalesOverTimeAsync(
+            GetSalesOverTimeRequest request ,
+            CancellationToken cancellationToken = default );
 }
