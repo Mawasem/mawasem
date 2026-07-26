@@ -1,4 +1,4 @@
-using Mawasem.API.Authentication;
+﻿using Mawasem.API.Authentication;
 using Mawasem.API.Authorization;
 using Mawasem.API.BackgroundServices;
 using Mawasem.Application.Features.Addresses.Interfaces;
@@ -17,6 +17,7 @@ using Mawasem.Application.Features.Orders.Interfaces;
 using Mawasem.Application.Features.Products.Interfaces;
 using Mawasem.Application.Features.PublicCatalog.Interfaces;
 using Mawasem.Application.Features.Refunds.Interfaces;
+using Mawasem.Application.Features.Reports.Interfaces;
 using Mawasem.Application.Features.Reviews.Interfaces;
 using Mawasem.Application.Features.Roles.Interfaces;
 using Mawasem.Application.Features.Seasons.Interfaces;
@@ -37,6 +38,7 @@ using Mawasem.Infrastructure.Persistence.Seed;
 using Mawasem.Infrastructure.Products;
 using Mawasem.Infrastructure.PublicCatalog;
 using Mawasem.Infrastructure.Refunds;
+using Mawasem.Infrastructure.Reports;
 using Mawasem.Infrastructure.Reviews;
 using Mawasem.Infrastructure.Roles;
 using Mawasem.Infrastructure.Seasons;
@@ -363,6 +365,10 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IReviewService ,
     ReviewService>();
+
+builder.Services.AddScoped<
+    IReportService ,
+    ReportService>();
 
 builder.Services.AddScoped<
     IBrandManagementService ,

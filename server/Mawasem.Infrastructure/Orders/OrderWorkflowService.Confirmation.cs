@@ -82,6 +82,14 @@ public sealed partial class OrderWorkflowService
             order.OrderStatus =
                 OrderStatus.Confirmed;
 
+            RecordStatusChange(
+                order ,
+                previousStatus ,
+                OrderStatus.Confirmed ,
+                dashboardUserId ,
+                OrderStatusChangeActorType.DashboardUser ,
+                now);
+
             MarkModified(
                 order ,
                 now ,
