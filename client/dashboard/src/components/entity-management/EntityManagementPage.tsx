@@ -23,10 +23,10 @@ interface EntityManagementPageProps<TData, TValue> {
   description: string;
   search: string;
   onSearch: (value: string) => void;
-  includeDeleted: boolean;
-  onIncludeDeletedChange: (value: boolean) => void;
-  includeDeletedLabel: string;
-  includeDeletedSwitchId: string;
+  includeDeleted?: boolean;
+  onIncludeDeletedChange?: (value: boolean) => void;
+  includeDeletedLabel?: string;
+  includeDeletedSwitchId?: string;
   buttonLabel: string;
   onCreate: () => void;
   searchPlaceholder?: string;
@@ -92,19 +92,24 @@ export function EntityManagementPage<TData, TValue>({
       >
         {filtersSlot}
 
-        <div className="flex items-center gap-2">
-          <Switch
-            id={includeDeletedSwitchId}
-            checked={includeDeleted}
-            onCheckedChange={
-              onIncludeDeletedChange
-            }
-          />
+        {typeof includeDeleted === "boolean" &&
+        onIncludeDeletedChange &&
+        includeDeletedLabel &&
+        includeDeletedSwitchId ? (
+          <div className="flex items-center gap-2">
+            <Switch
+              id={includeDeletedSwitchId}
+              checked={includeDeleted}
+              onCheckedChange={
+                onIncludeDeletedChange
+              }
+            />
 
-          <Label htmlFor={includeDeletedSwitchId}>
-            {includeDeletedLabel}
-          </Label>
-        </div>
+            <Label htmlFor={includeDeletedSwitchId}>
+              {includeDeletedLabel}
+            </Label>
+          </div>
+        ) : null}
       </div>
 
       <EntityTable

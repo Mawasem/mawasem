@@ -1,4 +1,6 @@
 {
+  "common.notAvailable": "غير متاح",
+  "common.save": "حفظ",
   "common.cancel": "إلغاء",
   "common.delete": "حذف",
   "common.deleting": "جارٍ الحذف...",

@@ -1,17 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { blockEmployee } from "../api/block-employee"
 
-export function useBlockEmployee() {
+import { resetEmployeePassword } from "../api/reset-employee-password"
+
+export function useResetEmployeePassword() {
   const queryClient = useQueryClient()
 
   const {
-    mutate: blockEmployeeMutation,
-    mutateAsync: blockEmployeeAsync,
+    mutate: resetEmployeePasswordMutation,
+    mutateAsync: resetEmployeePasswordAsync,
     isPending: isLoading,
     error,
-    reset: resetBlockEmployee,
   } = useMutation({
-    mutationFn: blockEmployee,
+    mutationFn: resetEmployeePassword,
 
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
@@ -25,10 +25,9 @@ export function useBlockEmployee() {
   })
 
   return {
-    blockEmployee: blockEmployeeMutation,
-    blockEmployeeAsync,
+    resetEmployeePassword: resetEmployeePasswordMutation,
+    resetEmployeePasswordAsync,
     isLoading,
     error,
-    resetBlockEmployee,
   }
 }

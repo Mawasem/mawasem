@@ -7,8 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { normalizeArabic } from "@/lib/normalize-arabic";
 
-import { SeasonDialog } from "../components/season-dialog";
 import { useSeasonColumns } from "../components/season-columns";
+import { SeasonDialog } from "../components/season-dialog";
 import { useSeasons } from "../hooks/use-seasons";
 
 export default function SeasonsPage() {

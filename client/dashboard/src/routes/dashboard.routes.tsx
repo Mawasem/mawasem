@@ -2,13 +2,13 @@ import { BrandsPage } from "@/features/brands/pages/BrandsPage";
 import CategoriesPage from "@/features/categories/pages/CategoriesPage";
 import CollectionsPage from "@/features/collections/pages/CollectionsPage";
 import CustomerPage from "@/features/customers/pages/CustomerPage";
+import EmployeesPage from "@/features/Employees/pages/EmployeesPage";
 import RolesPage from "@/features/roles/pages/RolesPage";
 import SeasonsPage from "@/features/seasons/pages/SeasonsPage";
 import AdminLayout from "@/layouts/AdminLayout";
 import DashboardPage from "@/pages/Home/DashboardPage";
 import type { RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "./protected-route";
-import EmployeePage from "@/features/Employees/pages/EmployeePage";
 
 export const dashboardRoutes: RouteObject = {
   path: "/",
@@ -48,7 +48,7 @@ export const dashboardRoutes: RouteObject = {
     },
     {
       path: "employees",
-      element: <EmployeePage />
+      element: <EmployeesPage />,
     }
   ],
 };

@@ -4,7 +4,7 @@ import { getRolePermissionOptions } from "../api/get-role-permission-options";
 
 export function useRolePermissionOptions() {
   const {
-    data,
+    data: permissionOptionsData,
     isPending: isLoading,
     error,
   } = useQuery({
@@ -13,7 +13,7 @@ export function useRolePermissionOptions() {
   });
 
   return {
-    data,
+    permissionOptionsData,
     isLoading,
     error,
   };
