@@ -8,6 +8,7 @@ import AdminLayout from "@/layouts/AdminLayout";
 import DashboardPage from "@/pages/Home/DashboardPage";
 import type { RouteObject } from "react-router-dom";
 import { ProtectedRoute } from "./protected-route";
+import EmployeePage from "@/features/Employees/pages/EmployeePage";
 
 export const dashboardRoutes: RouteObject = {
   path: "/",
@@ -44,6 +45,10 @@ export const dashboardRoutes: RouteObject = {
     {
       path: "roles",
       element: <RolesPage />
+    },
+    {
+      path: "employees",
+      element: <EmployeePage />
     }
   ],
 };

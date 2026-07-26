@@ -5,6 +5,7 @@ import {
   Leaf,
   ShieldCheck,
   Users,
+  UsersRound
 } from "lucide-react";
 
 export const data = [
@@ -49,6 +50,11 @@ export const data = [
         key: "roles",
         url: "/roles",
         icon: ShieldCheck,
+      },
+      {
+        key: "employees",
+        url: "/employees",
+        icon: UsersRound,
       },
     ],
   },
