@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -51,7 +51,10 @@ export function DeliveryAreaForm({
         : deliveryAreaFormDefaultValues,
   });
 
-  const isFreeDelivery = form.watch("isFreeDelivery");
+  const isFreeDelivery = useWatch({
+    control: form.control,
+    name: "isFreeDelivery",
+  });
 
   return (
     <Form {...form}>

@@ -1,0 +1,3 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createProductVariant } from "../api/create-product-variant";
+export function useCreateProductVariant() { const queryClient = useQueryClient(); const { mutate: createProductVariantMutation, mutateAsync: createProductVariantAsync, isPending: isLoading, error } = useMutation({ mutationFn: createProductVariant, onSuccess: (_, variables) => { void queryClient.invalidateQueries({ queryKey: ["product-variants", variables.productId] }); void queryClient.invalidateQueries({ queryKey: ["products"] }); void queryClient.invalidateQueries({ queryKey: ["product", variables.productId] }); } }); return { createProductVariant: createProductVariantMutation, createProductVariantAsync, isLoading, error }; }

@@ -1,0 +1,3 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { setPrimaryProductImage } from "../api/set-primary-product-image";
+export function useSetPrimaryProductImage() { const queryClient = useQueryClient(); const { mutate: setPrimaryProductImageMutation, mutateAsync: setPrimaryProductImageAsync, isPending: isLoading, error } = useMutation({ mutationFn: setPrimaryProductImage, onSuccess: (_, variables) => { void queryClient.invalidateQueries({ queryKey: ["product-images", variables.productId] }); } }); return { setPrimaryProductImage: setPrimaryProductImageMutation, setPrimaryProductImageAsync, isLoading, error }; }

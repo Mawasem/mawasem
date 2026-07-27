@@ -4,6 +4,7 @@ import {
   LayoutGrid,
   Leaf,
   MapPin,
+  PackageSearch,
   ShieldCheck,
   Users,
   UsersRound
@@ -34,6 +35,11 @@ export const data = [
         key: "seasons",
         url: "/seasons",
         icon: Leaf,
+      },
+      {
+        key: "products",
+        url: "/products",
+        icon: PackageSearch,
       },
     ],
   },

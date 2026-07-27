@@ -9,5 +9,7 @@
   "common.saveChanges": "Save changes",
   "common.restoring": "Restoring...",
   "common.yes": "Yes",
-  "common.no": "No"
+  "common.no": "No",
+  "common.loading": "Loading...",
+  "common.remove": "Remove"
 }

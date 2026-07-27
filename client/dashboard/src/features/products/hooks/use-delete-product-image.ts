@@ -1,0 +1,3 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteProductImage } from "../api/delete-product-image";
+export function useDeleteProductImage() { const queryClient = useQueryClient(); const { mutate: deleteProductImageMutation, mutateAsync: deleteProductImageAsync, isPending: isLoading, error } = useMutation({ mutationFn: deleteProductImage, onSuccess: (_, variables) => { void queryClient.invalidateQueries({ queryKey: ["product-images", variables.productId] }); } }); return { deleteProductImage: deleteProductImageMutation, deleteProductImageAsync, isLoading, error }; }

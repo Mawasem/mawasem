@@ -4,13 +4,6 @@ import { useDebounce } from "use-debounce";
 
 import { EntityManagementPage } from "@/components/entity-management/EntityManagementPage";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { normalizeArabic } from "@/lib/normalize-arabic";
 
 import { useDeliveryAreaColumns } from "../components/delivery-area-columns";
@@ -18,6 +11,9 @@ import { DeliveryAreaDialog } from "../components/delivery-area-dialog";
 import { getDeliveryAreaErrorMessage } from "../get-delivery-area-error-message";
 import { useDeliveryAreas } from "../hooks/use-delivery-areas";
 import { DeliveryAreaStatus } from "../types";
+
+const selectClassName =
+  "h-9 min-w-40 rounded-4xl border border-input bg-input/30 px-3 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50";
 
 type StatusFilter = "all" | DeliveryAreaStatus;
 type ActivityFilter = "all" | "active" | "inactive";
@@ -124,65 +120,57 @@ export default function DeliveryAreasPage() {
       }}
       filtersSlot={
         <div className="flex flex-wrap items-end gap-4">
-          <div className="w-full space-y-2 sm:w-[220px]">
+          <div className="space-y-2">
             <Label htmlFor="delivery-area-status-filter">
               {t("deliveryAreas.filters.status")}
             </Label>
-            <Select
-              value={String(statusFilter)}
-              onValueChange={handleStatusFilterChange}
+            <select
+              id="delivery-area-status-filter"
+              className={selectClassName}
+              value={statusFilter}
+              onChange={(event) =>
+                handleStatusFilterChange(event.target.value)
+              }
             >
-              <SelectTrigger
-                id="delivery-area-status-filter"
-                className="w-full"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">
-                  {t("deliveryAreas.filters.allStatuses")}
-                </SelectItem>
-                <SelectItem value={String(DeliveryAreaStatus.Pending)}>
-                  {t("deliveryAreas.status.pending")}
-                </SelectItem>
-                <SelectItem value={String(DeliveryAreaStatus.Confirmed)}>
-                  {t("deliveryAreas.status.confirmed")}
-                </SelectItem>
-                <SelectItem value={String(DeliveryAreaStatus.Restricted)}>
-                  {t("deliveryAreas.status.restricted")}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+              <option value="all">
+                {t("deliveryAreas.filters.allStatuses")}
+              </option>
+              <option value={DeliveryAreaStatus.Pending}>
+                {t("deliveryAreas.status.pending")}
+              </option>
+              <option value={DeliveryAreaStatus.Confirmed}>
+                {t("deliveryAreas.status.confirmed")}
+              </option>
+              <option value={DeliveryAreaStatus.Restricted}>
+                {t("deliveryAreas.status.restricted")}
+              </option>
+            </select>
           </div>
 
-          <div className="w-full space-y-2 sm:w-[220px]">
+          <div className="space-y-2">
             <Label htmlFor="delivery-area-activity-filter">
               {t("deliveryAreas.filters.activity")}
             </Label>
-            <Select
+            <select
+              id="delivery-area-activity-filter"
+              className={selectClassName}
               value={activityFilter}
-              onValueChange={(value) =>
-                handleActivityFilterChange(value as ActivityFilter)
+              onChange={(event) =>
+                handleActivityFilterChange(
+                  event.target.value as ActivityFilter
+                )
               }
             >
-              <SelectTrigger
-                id="delivery-area-activity-filter"
-                className="w-full"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">
-                  {t("deliveryAreas.filters.allActivity")}
-                </SelectItem>
-                <SelectItem value="active">
-                  {t("deliveryAreas.activity.active")}
-                </SelectItem>
-                <SelectItem value="inactive">
-                  {t("deliveryAreas.activity.inactive")}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+              <option value="all">
+                {t("deliveryAreas.filters.allActivity")}
+              </option>
+              <option value="active">
+                {t("deliveryAreas.activity.active")}
+              </option>
+              <option value="inactive">
+                {t("deliveryAreas.activity.inactive")}
+              </option>
+            </select>
           </div>
         </div>
       }

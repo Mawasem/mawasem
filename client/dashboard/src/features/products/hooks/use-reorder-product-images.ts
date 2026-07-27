@@ -1,0 +1,3 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { reorderProductImages } from "../api/reorder-product-images";
+export function useReorderProductImages() { const queryClient = useQueryClient(); const { mutate: reorderProductImagesMutation, mutateAsync: reorderProductImagesAsync, isPending: isLoading, error } = useMutation({ mutationFn: reorderProductImages, onSuccess: (_, variables) => { void queryClient.invalidateQueries({ queryKey: ["product-images", variables.productId] }); } }); return { reorderProductImages: reorderProductImagesMutation, reorderProductImagesAsync, isLoading, error }; }

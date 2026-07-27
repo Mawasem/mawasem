@@ -9,5 +9,7 @@
   "common.saveChanges": "حفظ التغييرات",
   "common.restoring": "جارٍ الاستعادة...",
   "common.yes": "نعم",
-  "common.no": "لا"
+  "common.no": "لا",
+  "common.loading": "جارٍ التحميل...",
+  "common.remove": "إزالة"
 }

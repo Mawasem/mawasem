@@ -21,6 +21,8 @@ export function EntityTable<TData, TValue>({
   data,
   emptyStateLabel = "No results found.",
 }: EntityTableProps<TData, TValue>) {
+  // TanStack Table returns functions that React Compiler cannot memoize safely.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,

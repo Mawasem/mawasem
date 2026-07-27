@@ -1,0 +1,3 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { uploadProductImage } from "../api/upload-product-image";
+export function useUploadProductImage() { const queryClient = useQueryClient(); const { mutate: uploadProductImageMutation, mutateAsync: uploadProductImageAsync, isPending: isLoading, error } = useMutation({ mutationFn: uploadProductImage, onSuccess: (_, variables) => { void queryClient.invalidateQueries({ queryKey: ["product-images", variables.productId] }); } }); return { uploadProductImage: uploadProductImageMutation, uploadProductImageAsync, isLoading, error }; }

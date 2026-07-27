@@ -23,8 +23,10 @@ export function RolePermissionsDialog({
   onOpenChange,
 }: RolePermissionsDialogProps) {
   const { t } = useTranslation();
-  const { data: permissionOptionsData, isLoading: isLoadingOptions } =
-    useRolePermissionOptions();
+  const {
+    permissionOptionsData,
+    isLoading: isLoadingOptions,
+  } = useRolePermissionOptions();
   const { mutateAsync, isLoading: isSaving, error } =
     useUpdateRolePermissions();
 

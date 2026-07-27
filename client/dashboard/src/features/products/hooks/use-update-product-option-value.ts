@@ -1,0 +1,3 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateProductOptionValue } from "../api/update-product-option-value";
+export function useUpdateProductOptionValue() { const queryClient = useQueryClient(); const { mutate: updateProductOptionValueMutation, mutateAsync: updateProductOptionValueAsync, isPending: isLoading, error } = useMutation({ mutationFn: updateProductOptionValue, onSuccess: () => { void queryClient.invalidateQueries({ queryKey: ["product-options"] }); } }); return { updateProductOptionValue: updateProductOptionValueMutation, updateProductOptionValueAsync, isLoading, error }; }
