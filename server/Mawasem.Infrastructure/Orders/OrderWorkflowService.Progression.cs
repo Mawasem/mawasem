@@ -135,6 +135,15 @@ public sealed partial class OrderWorkflowService
             order.OrderStatus =
                 targetStatus;
 
+            if ( targetStatus ==
+                    OrderStatus.Delivered &&
+                 order.PaymentMethod ==
+                    PaymentMethod.CashOnDelivery )
+            {
+                order.PaymentStatus =
+                    PaymentStatus.Paid;
+            }
+
             RecordStatusChange(
                 order ,
                 previousStatus ,

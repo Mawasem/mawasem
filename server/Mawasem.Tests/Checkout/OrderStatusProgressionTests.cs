@@ -530,6 +530,58 @@ public sealed class OrderStatusProgressionTests
             variant.StockQuantity);
     }
 
+    [Fact]
+    public async Task
+        DeliverAsync_CashOnDeliveryOrder_MarksPaymentAsPaid()
+    {
+        await using var database =
+            new CheckoutTestDatabase();
+
+        await database.SeedAsync();
+
+        var orderId =
+            await CreateOrderWithStatusAsync(
+                database ,
+                "deliver-cod-payment-status" ,
+                OrderStatus.Shipped);
+
+        await using (
+            var dbContext =
+                database.CreateContext() )
+        {
+            var service =
+                CreateWorkflowService(
+                    dbContext);
+
+            var result =
+                await service.DeliverAsync(
+                    orderId ,
+                    DashboardUserId);
+
+            Assert.True(
+                result.Succeeded);
+        }
+
+        await using var verificationContext =
+            database.CreateContext();
+
+        var order =
+            await verificationContext.Orders
+                .SingleAsync(candidate =>
+                    candidate.Id == orderId);
+
+        Assert.Equal(
+            OrderStatus.Delivered ,
+            order.OrderStatus);
+
+        Assert.Equal(
+            PaymentMethod.CashOnDelivery ,
+            order.PaymentMethod);
+
+        Assert.Equal(
+            PaymentStatus.Paid ,
+            order.PaymentStatus);
+    }
     private static async Task<int>
         CreateOrderWithStatusAsync(
             CheckoutTestDatabase database ,
