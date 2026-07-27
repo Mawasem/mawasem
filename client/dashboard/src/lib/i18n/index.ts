@@ -9,6 +9,7 @@ import arCollections from "./ar/collections.json";
 import arCommon from "./ar/common.json";
 import arCustomers from "./ar/customers.json";
 import arDashboard from "./ar/dashboard.json";
+import arDeliveryAreas from "./ar/delivery-areas.json";
 import arEmployees from "./ar/employees.json";
 import arOrders from "./ar/orders.json";
 import arProducts from "./ar/products.json";
@@ -23,6 +24,7 @@ import enCollections from "./en/collections.json";
 import enCommon from "./en/common.json";
 import enCustomers from "./en/customers.json";
 import enDashboard from "./en/dashboard.json";
+import enDeliveryAreas from "./en/delivery-areas.json";
 import enEmployees from "./en/employees.json";
 import enOrders from "./en/orders.json";
 import enProducts from "./en/products.json";
@@ -56,6 +58,7 @@ if (!i18n.isInitialized) {
             ...enCommon,
             ...enSidebar,
             ...enDashboard,
+            ...enDeliveryAreas,
             ...enCategories,
             ...enBrands,
             ...enCollections,
@@ -74,6 +77,7 @@ if (!i18n.isInitialized) {
             ...arCommon,
             ...arSidebar,
             ...arDashboard,
+            ...arDeliveryAreas,
             ...arCategories,
             ...arBrands,
             ...arCollections,

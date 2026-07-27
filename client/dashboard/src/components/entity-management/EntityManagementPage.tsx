@@ -86,7 +86,7 @@ export function EntityManagementPage<TData, TValue>({
       />
 
       <div
-        className={`flex items-center ${
+        className={`flex flex-wrap items-center ${
           filtersSlot ? "gap-6" : "gap-2"
         }`}
       >

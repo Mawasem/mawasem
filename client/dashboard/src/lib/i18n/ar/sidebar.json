@@ -18,5 +18,7 @@
   "sidebar.languageArabic": "العربية",
   "sidebar.toggle": "تبديل الشريط الجانبي",
   "sidebar.mobileTitle": "الشريط الجانبي",
-  "sidebar.mobileDescription": "يعرض الشريط الجانبي على الجوال."
+  "sidebar.mobileDescription": "يعرض الشريط الجانبي على الجوال.",
+  "sidebar.operations": "العمليات",
+  "sidebar.deliveryAreas": "مناطق التوصيل"
 }

@@ -18,5 +18,7 @@
   "sidebar.languageArabic": "العربية",
   "sidebar.toggle": "Toggle Sidebar",
   "sidebar.mobileTitle": "Sidebar",
-  "sidebar.mobileDescription": "Displays the mobile sidebar."
+  "sidebar.mobileDescription": "Displays the mobile sidebar.",
+  "sidebar.operations": "Operations",
+  "sidebar.deliveryAreas": "Delivery Areas"
 }

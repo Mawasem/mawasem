@@ -7,5 +7,7 @@
   "common.creating": "جارٍ الإنشاء...",
   "common.saving": "جارٍ الحفظ...",
   "common.saveChanges": "حفظ التغييرات",
-  "common.restoring": "جارٍ الاستعادة..."
+  "common.restoring": "جارٍ الاستعادة...",
+  "common.yes": "نعم",
+  "common.no": "لا"
 }

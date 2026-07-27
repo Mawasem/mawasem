@@ -12,7 +12,7 @@ export function EntityToolbar({
   onAdd,
 }: EntityToolbarProps) {
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className="flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">
       <Input
         value={search}
         onChange={(e) => onSearch(e.target.value)}

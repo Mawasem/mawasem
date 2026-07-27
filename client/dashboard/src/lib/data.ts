@@ -3,6 +3,7 @@ import {
   FolderKanban,
   LayoutGrid,
   Leaf,
+  MapPin,
   ShieldCheck,
   Users,
   UsersRound
@@ -33,6 +34,18 @@ export const data = [
         key: "seasons",
         url: "/seasons",
         icon: Leaf,
+      },
+    ],
+  },
+  {
+    key: "operations",
+    url: "#",
+
+    items: [
+      {
+        key: "deliveryAreas",
+        url: "/delivery-areas",
+        icon: MapPin,
       },
     ],
   },

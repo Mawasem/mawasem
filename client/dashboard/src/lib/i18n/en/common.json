@@ -7,5 +7,7 @@
   "common.creating": "Creating...",
   "common.saving": "Saving...",
   "common.saveChanges": "Save changes",
-  "common.restoring": "Restoring..."
+  "common.restoring": "Restoring...",
+  "common.yes": "Yes",
+  "common.no": "No"
 }
