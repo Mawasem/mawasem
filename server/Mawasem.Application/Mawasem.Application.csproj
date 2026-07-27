@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Responses\" />
-    <Folder Include="Features\Cart\" />
-    <Folder Include="Features\Delivery\" />
-    <Folder Include="Features\Payments\" />
     <Folder Include="Features\Orders\" />
   </ItemGroup>
 
