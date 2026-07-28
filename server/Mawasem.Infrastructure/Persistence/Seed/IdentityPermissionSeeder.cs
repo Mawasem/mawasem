@@ -9,6 +9,14 @@ public sealed class IdentityPermissionSeeder
 {
     private const string SystemUserName = "System";
 
+    private static readonly string[]
+        RetiredComplaintPermissionNames =
+        {
+            "Complaints.Edit" ,
+            "Complaints.Assign" ,
+            "Complaints.Close"
+        };
+
     private readonly MawasemDbContext _dbContext;
     private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly TimeProvider _timeProvider;
@@ -27,6 +35,9 @@ public sealed class IdentityPermissionSeeder
         CancellationToken cancellationToken = default )
     {
         await SeedPermissionsAsync(cancellationToken);
+
+        await RetireComplaintPermissionsAsync(
+            cancellationToken);
 
         await AssignSuperAdminPermissionsAsync(
             cancellationToken);
@@ -105,6 +116,69 @@ public sealed class IdentityPermissionSeeder
             cancellationToken);
     }
 
+    private async Task RetireComplaintPermissionsAsync(
+        CancellationToken cancellationToken )
+    {
+        var retiredPermissions =
+            await _dbContext.Permissions
+                .IgnoreQueryFilters()
+                .Where(permission =>
+                    RetiredComplaintPermissionNames.Contains(
+                        permission.Name))
+                .ToListAsync(cancellationToken);
+
+        if ( retiredPermissions.Count == 0 )
+        {
+            return;
+        }
+
+        var retiredPermissionIds =
+            retiredPermissions
+                .Select(permission =>
+                    permission.Id)
+                .ToArray();
+
+        var roleAssignments =
+            await _dbContext.RolePermissions
+                .Where(rolePermission =>
+                    retiredPermissionIds.Contains(
+                        rolePermission.PermissionId))
+                .ToListAsync(cancellationToken);
+
+        var userAssignments =
+            await _dbContext.UserPermissions
+                .Where(userPermission =>
+                    retiredPermissionIds.Contains(
+                        userPermission.PermissionId))
+                .ToListAsync(cancellationToken);
+
+        _dbContext.RolePermissions.RemoveRange(
+            roleAssignments);
+
+        _dbContext.UserPermissions.RemoveRange(
+            userAssignments);
+
+        var now =
+            _timeProvider.GetUtcNow();
+
+        foreach ( var permission
+            in retiredPermissions )
+        {
+            if ( permission.IsDeleted )
+            {
+                continue;
+            }
+
+            permission.IsDeleted = true;
+            permission.DeletedOn = now;
+            permission.DeletedBy = SystemUserName;
+            permission.LastModifiedOn = now;
+            permission.LastModifiedBy = SystemUserName;
+        }
+
+        await _dbContext.SaveChangesAsync(
+            cancellationToken);
+    }
     private async Task AssignSuperAdminPermissionsAsync(
         CancellationToken cancellationToken )
     {
