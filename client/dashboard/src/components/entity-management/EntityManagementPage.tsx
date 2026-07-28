@@ -1,46 +1,9 @@
-import type { ReactNode } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
-
 import { EntityPagination } from "@/components/entity-table/entity-pagination";
 import { EntityTable } from "@/components/entity-table/entity-table";
 import { EntityToolbar } from "@/components/entity-table/entity-toolbar";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-
-interface EntityManagementPagePagination {
-  totalCount: number;
-  page: number;
-  totalPages: number;
-  totalCountLabel?: string;
-  pageLabel?: string;
-  previousLabel?: string;
-  nextLabel?: string;
-  onPageChange: (page: number) => void;
-}
-
-interface EntityManagementPageProps<TData, TValue> {
-  title: string;
-  description: string;
-  search: string;
-  onSearch: (value: string) => void;
-  includeDeleted?: boolean;
-  onIncludeDeletedChange?: (value: boolean) => void;
-  includeDeletedLabel?: string;
-  includeDeletedSwitchId?: string;
-  buttonLabel: string;
-  onCreate: () => void;
-  searchPlaceholder?: string;
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  emptyStateLabel?: string;
-  loading: boolean;
-  loadingLabel?: string;
-  error: unknown;
-  errorRenderer?: (error: Error) => string;
-  pagination: EntityManagementPagePagination;
-  filtersSlot?: ReactNode;
-  children?: ReactNode;
-}
+import type { EntityManagementPageProps } from "../entity-table/types";
 
 export function EntityManagementPage<TData, TValue>({
   title,

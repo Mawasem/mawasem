@@ -5,6 +5,7 @@ import {
   Leaf,
   MapPin,
   PackageSearch,
+  ShoppingCart,
   ShieldCheck,
   Users,
   UsersRound
@@ -52,6 +53,11 @@ export const data = [
         key: "deliveryAreas",
         url: "/delivery-areas",
         icon: MapPin,
+      },
+      {
+        key: "orders",
+        url: "/orders",
+        icon: ShoppingCart,
       },
     ],
   },

@@ -4,6 +4,7 @@ import CollectionsPage from "@/features/collections/pages/CollectionsPage";
 import CustomerPage from "@/features/customers/pages/CustomerPage";
 import DeliveryAreasPage from "@/features/delivery-areas/pages/DeliveryAreasPage";
 import ProductsPage from "@/features/products/pages/ProductsPage";
+import OrdersPage from "@/features/orders/pages/OrdersPage";
 import EmployeesPage from "@/features/Employees/pages/EmployeesPage";
 import RolesPage from "@/features/roles/pages/RolesPage";
 import SeasonsPage from "@/features/seasons/pages/SeasonsPage";
@@ -51,6 +52,10 @@ export const dashboardRoutes: RouteObject = {
     {
       path: "products",
       element: <ProductsPage />
+    },
+    {
+      path: "orders",
+      element: <OrdersPage />
     },
     {
       path: "roles",

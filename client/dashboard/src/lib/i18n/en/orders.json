@@ -1,1 +1,176 @@
-{}
+{
+  "orders": {
+    "page": {
+      "title": "Orders",
+      "description": "Review customer orders and manage their fulfilment workflow."
+    },
+    "searchPlaceholder": "Search by order number, customer name, or phone...",
+    "loading": "Loading orders...",
+    "empty": "No orders found.",
+    "filters": {
+      "toggle": "Filters",
+      "status": "Order status",
+      "allStatuses": "All statuses",
+      "paymentMethod": "Payment method",
+      "allPaymentMethods": "All payment methods",
+      "paymentStatus": "Payment status",
+      "allPaymentStatuses": "All payment statuses",
+      "deliveryMethod": "Delivery method",
+      "allDeliveryMethods": "All delivery methods",
+      "source": "Order source",
+      "allSources": "All sources",
+      "fromDate": "From date",
+      "toDate": "To date",
+      "clear": "Clear filters"
+    },
+    "table": {
+      "orderNumber": "Order",
+      "customer": "Customer",
+      "status": "Status",
+      "payment": "Payment",
+      "deliveryMethod": "Delivery",
+      "items": "Items",
+      "distinctItems_one": "{{count}} item",
+      "distinctItems_other": "{{count}} items",
+      "totalQuantity": "{{count}} units",
+      "total": "Total",
+      "date": "Order date",
+      "actions": "Actions"
+    },
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "preparing": "Preparing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled",
+      "refund_requested": "Refund requested",
+      "refunded": "Refunded",
+      "rejected": "Rejected",
+      "partially_refunded": "Partially refunded",
+      "unknown": "Unknown"
+    },
+    "paymentMethod": {
+      "cash_on_delivery": "Cash on delivery",
+      "online": "Online",
+      "unknown": "Unknown"
+    },
+    "paymentStatus": {
+      "pending": "Pending",
+      "paid": "Paid",
+      "failed": "Failed",
+      "refunded": "Refunded",
+      "partially_refunded": "Partially refunded",
+      "unknown": "Unknown"
+    },
+    "deliveryMethod": {
+      "home_delivery": "Home delivery",
+      "store_pickup": "Store pickup",
+      "unknown": "Unknown"
+    },
+    "source": {
+      "website": "Website",
+      "store": "Store",
+      "unknown": "Unknown"
+    },
+    "actions": {
+      "openActions": "Open order actions",
+      "viewDetails": "View details",
+      "confirm": "Confirm order",
+      "prepare": "Start preparing",
+      "ship": "Mark as shipped",
+      "deliver": "Mark as delivered",
+      "reject": "Reject order",
+      "cancel": "Cancel order"
+    },
+    "workflow": {
+      "reason": "Reason",
+      "reasonPlaceholder": "Enter a clear reason...",
+      "confirm": {
+        "title": "Confirm order",
+        "description": "Confirm order {{orderNumber}} and move it to the confirmed state.",
+        "submit": "Confirm order"
+      },
+      "prepare": {
+        "title": "Prepare order",
+        "description": "Start preparing order {{orderNumber}}.",
+        "submit": "Start preparing"
+      },
+      "ship": {
+        "title": "Ship order",
+        "description": "Mark order {{orderNumber}} as shipped.",
+        "submit": "Mark as shipped"
+      },
+      "deliver": {
+        "title": "Deliver order",
+        "description": "Mark order {{orderNumber}} as delivered.",
+        "submit": "Mark as delivered"
+      },
+      "reject": {
+        "title": "Reject order",
+        "description": "Reject order {{orderNumber}}. Stock restoration is controlled by the backend workflow.",
+        "submit": "Reject order"
+      },
+      "cancel": {
+        "title": "Cancel order",
+        "description": "Cancel order {{orderNumber}}. This action requires a reason.",
+        "submit": "Cancel order"
+      }
+    },
+    "details": {
+      "title": "Order {{orderNumber}}",
+      "description": "Complete order, customer, shipping, item, and payment information.",
+      "customer": "Customer",
+      "shipping": "Shipping",
+      "orderInfo": "Order information",
+      "items": "Order items",
+      "totals": "Order totals"
+    },
+    "fields": {
+      "name": "Name",
+      "phone": "Phone",
+      "customerId": "Customer ID",
+      "deliveryMethod": "Delivery method",
+      "deliveryArea": "Delivery area",
+      "recipient": "Recipient",
+      "address": "Address",
+      "building": "Building",
+      "floor": "Floor",
+      "apartment": "Apartment",
+      "landmark": "Landmark",
+      "paymentMethod": "Payment method",
+      "paymentStatus": "Payment status",
+      "source": "Source",
+      "coupon": "Coupon",
+      "notes": "Notes",
+      "cancellationReason": "Cancellation reason",
+      "rejectionReason": "Rejection reason",
+      "stockRestoredAt": "Stock restored at",
+      "quantity": "Quantity",
+      "unitPrice": "Unit price",
+      "discount": "Discount",
+      "refundedQuantity": "Refunded quantity",
+      "subTotal": "Subtotal",
+      "deliveryFee": "Delivery fee",
+      "total": "Total"
+    },
+    "pagination": {
+      "rows": "orders",
+      "page": "Page",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "errors": {
+      "generic": "The order request could not be completed.",
+      "codes": {
+        "orders_invalid_request": "The order request is invalid.",
+        "orders_order_not_found": "The requested order was not found.",
+        "orders_order_access_denied": "You do not have access to this order.",
+        "orders_invalid_status_transition": "This status change is not allowed for the current order state.",
+        "orders_invalid_reason": "Enter a valid reason.",
+        "orders_concurrency_conflict": "The order changed while you were editing it. Refresh and try again.",
+        "orders_operation_failed": "The order operation failed."
+      }
+    }
+  }
+}

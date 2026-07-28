@@ -1,1 +1,180 @@
-{}
+{
+  "orders": {
+    "page": {
+      "title": "الطلبات",
+      "description": "مراجعة طلبات العملاء وإدارة مراحل تجهيزها وتسليمها."
+    },
+    "searchPlaceholder": "ابحث برقم الطلب أو اسم العميل أو رقم الهاتف...",
+    "loading": "جارٍ تحميل الطلبات...",
+    "empty": "لا توجد طلبات.",
+    "filters": {
+      "toggle": "الفلاتر",
+      "status": "حالة الطلب",
+      "allStatuses": "كل الحالات",
+      "paymentMethod": "طريقة الدفع",
+      "allPaymentMethods": "كل طرق الدفع",
+      "paymentStatus": "حالة الدفع",
+      "allPaymentStatuses": "كل حالات الدفع",
+      "deliveryMethod": "طريقة الاستلام",
+      "allDeliveryMethods": "كل طرق الاستلام",
+      "source": "مصدر الطلب",
+      "allSources": "كل المصادر",
+      "fromDate": "من تاريخ",
+      "toDate": "إلى تاريخ",
+      "clear": "مسح الفلاتر"
+    },
+    "table": {
+      "orderNumber": "الطلب",
+      "customer": "العميل",
+      "status": "الحالة",
+      "payment": "الدفع",
+      "deliveryMethod": "الاستلام",
+      "items": "المنتجات",
+      "distinctItems_zero": "لا توجد منتجات",
+      "distinctItems_one": "منتج واحد",
+      "distinctItems_two": "منتجان",
+      "distinctItems_few": "{{count}} منتجات",
+      "distinctItems_many": "{{count}} منتجًا",
+      "distinctItems_other": "{{count}} منتج",
+      "totalQuantity": "{{count}} قطعة",
+      "total": "الإجمالي",
+      "date": "تاريخ الطلب",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكد",
+      "preparing": "جارٍ التجهيز",
+      "shipped": "تم الشحن",
+      "delivered": "تم التسليم",
+      "cancelled": "ملغي",
+      "refund_requested": "تم طلب الاسترجاع",
+      "refunded": "تم الاسترجاع",
+      "rejected": "مرفوض",
+      "partially_refunded": "مسترجع جزئيًا",
+      "unknown": "غير معروف"
+    },
+    "paymentMethod": {
+      "cash_on_delivery": "الدفع عند الاستلام",
+      "online": "دفع إلكتروني",
+      "unknown": "غير معروف"
+    },
+    "paymentStatus": {
+      "pending": "قيد الانتظار",
+      "paid": "مدفوع",
+      "failed": "فشل الدفع",
+      "refunded": "تم الاسترجاع",
+      "partially_refunded": "مسترجع جزئيًا",
+      "unknown": "غير معروف"
+    },
+    "deliveryMethod": {
+      "home_delivery": "توصيل للمنزل",
+      "store_pickup": "استلام من المتجر",
+      "unknown": "غير معروف"
+    },
+    "source": {
+      "website": "الموقع",
+      "store": "المتجر",
+      "unknown": "غير معروف"
+    },
+    "actions": {
+      "openActions": "فتح إجراءات الطلب",
+      "viewDetails": "عرض التفاصيل",
+      "confirm": "تأكيد الطلب",
+      "prepare": "بدء التجهيز",
+      "ship": "تحديد كمشحون",
+      "deliver": "تحديد كمُسلّم",
+      "reject": "رفض الطلب",
+      "cancel": "إلغاء الطلب"
+    },
+    "workflow": {
+      "reason": "السبب",
+      "reasonPlaceholder": "اكتب سببًا واضحًا...",
+      "confirm": {
+        "title": "تأكيد الطلب",
+        "description": "تأكيد الطلب {{orderNumber}} ونقله إلى حالة مؤكد.",
+        "submit": "تأكيد الطلب"
+      },
+      "prepare": {
+        "title": "تجهيز الطلب",
+        "description": "بدء تجهيز الطلب {{orderNumber}}.",
+        "submit": "بدء التجهيز"
+      },
+      "ship": {
+        "title": "شحن الطلب",
+        "description": "تحديد الطلب {{orderNumber}} كمشحون.",
+        "submit": "تحديد كمشحون"
+      },
+      "deliver": {
+        "title": "تسليم الطلب",
+        "description": "تحديد الطلب {{orderNumber}} كمُسلّم.",
+        "submit": "تحديد كمُسلّم"
+      },
+      "reject": {
+        "title": "رفض الطلب",
+        "description": "رفض الطلب {{orderNumber}}. استعادة المخزون تتم طبقًا لقواعد الـ backend.",
+        "submit": "رفض الطلب"
+      },
+      "cancel": {
+        "title": "إلغاء الطلب",
+        "description": "إلغاء الطلب {{orderNumber}} مع توضيح السبب.",
+        "submit": "إلغاء الطلب"
+      }
+    },
+    "details": {
+      "title": "الطلب {{orderNumber}}",
+      "description": "كل بيانات الطلب والعميل والشحن والمنتجات والدفع.",
+      "customer": "العميل",
+      "shipping": "بيانات الشحن",
+      "orderInfo": "معلومات الطلب",
+      "items": "منتجات الطلب",
+      "totals": "إجماليات الطلب"
+    },
+    "fields": {
+      "name": "الاسم",
+      "phone": "الهاتف",
+      "customerId": "رقم العميل",
+      "deliveryMethod": "طريقة الاستلام",
+      "deliveryArea": "منطقة التوصيل",
+      "recipient": "المستلم",
+      "address": "العنوان",
+      "building": "المبنى",
+      "floor": "الدور",
+      "apartment": "الشقة",
+      "landmark": "علامة مميزة",
+      "paymentMethod": "طريقة الدفع",
+      "paymentStatus": "حالة الدفع",
+      "source": "المصدر",
+      "coupon": "الكوبون",
+      "notes": "ملاحظات",
+      "cancellationReason": "سبب الإلغاء",
+      "rejectionReason": "سبب الرفض",
+      "stockRestoredAt": "تاريخ استعادة المخزون",
+      "quantity": "الكمية",
+      "unitPrice": "سعر الوحدة",
+      "discount": "الخصم",
+      "refundedQuantity": "الكمية المسترجعة",
+      "subTotal": "الإجمالي الفرعي",
+      "deliveryFee": "رسوم التوصيل",
+      "total": "الإجمالي"
+    },
+    "pagination": {
+      "rows": "طلب",
+      "page": "الصفحة",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "errors": {
+      "generic": "تعذر إكمال طلب إدارة الطلبات.",
+      "codes": {
+        "orders_invalid_request": "بيانات الاستعلام غير صحيحة.",
+        "orders_order_not_found": "الطلب المطلوب غير موجود.",
+        "orders_order_access_denied": "ليس لديك صلاحية للوصول إلى هذا الطلب.",
+        "orders_invalid_status_transition": "لا يمكن تنفيذ هذا الانتقال من حالة الطلب الحالية.",
+        "orders_invalid_reason": "اكتب سببًا صحيحًا.",
+        "orders_concurrency_conflict": "تم تعديل الطلب أثناء العملية. حدّث الصفحة وحاول مجددًا.",
+        "orders_operation_failed": "فشلت عملية تحديث الطلب."
+      }
+    }
+  }
+}

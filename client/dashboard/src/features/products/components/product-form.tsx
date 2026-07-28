@@ -30,7 +30,6 @@ import { useBrands } from "@/features/brands/hooks/use-brands";
 import { useCategories } from "@/features/categories/hooks/use-categories";
 import { useCollections } from "@/features/collections/hooks/use-collections";
 import { useSeasons } from "@/features/seasons/hooks/use-seasons";
-import { CATALOGUE_OPTIONS_PAGE_SIZE } from "@/lib/catalogue-options";
 
 import {
   createProductFormSchema,
@@ -96,24 +95,24 @@ export function ProductForm({
     isActive: true,
     includeDeleted: false,
     pageNumber: 1,
-    pageSize: CATALOGUE_OPTIONS_PAGE_SIZE,
+    pageSize: 500,
   });
   const { data: seasonsData, isLoading: isSeasonsLoading } = useSeasons({
     includeDeleted: false,
     pageNumber: 1,
-    pageSize: CATALOGUE_OPTIONS_PAGE_SIZE,
+    pageSize: 500,
   });
   const { data: categoriesData, isLoading: isCategoriesLoading } =
     useCategories({
       includeDeleted: false,
       pageNumber: 1,
-      pageSize: CATALOGUE_OPTIONS_PAGE_SIZE,
+      pageSize: 500,
     });
   const { data: collectionsData, isLoading: isCollectionsLoading } =
     useCollections({
       includeDeleted: false,
       pageNumber: 1,
-      pageSize: CATALOGUE_OPTIONS_PAGE_SIZE,
+      pageSize: 500,
     });
 
   const availableCollections = (collectionsData?.items ?? []).filter(

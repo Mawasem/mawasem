@@ -23,12 +23,7 @@ export default defineConfig([
         'error',
         {
           allowConstantExport: true,
-          allowExportNames: [
-            'badgeVariants',
-            'buttonVariants',
-            'useFormField',
-            'useSidebar',
-          ],
+          allowExportNames: ['buttonVariants', 'useSidebar'],
         },
       ],
     },

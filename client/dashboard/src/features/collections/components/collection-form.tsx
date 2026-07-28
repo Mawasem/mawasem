@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { useSeasons } from "@/features/seasons/hooks/use-seasons";
-import { CATALOGUE_OPTIONS_PAGE_SIZE } from "@/lib/catalogue-options";
 import {
   collectionFormDefaultValues,
   createCollectionFormSchema,
@@ -64,7 +63,7 @@ export function CollectionForm({
     useSeasons({
       includeDeleted: false,
       pageNumber: 1,
-      pageSize: CATALOGUE_OPTIONS_PAGE_SIZE,
+      pageSize: 500,
     });
 
   const handleFormSubmit = async (
