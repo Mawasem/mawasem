@@ -1,6 +1,7 @@
 ﻿using Mawasem.Application.Features.Checkout.Interfaces;
 using Mawasem.Domain.Carts;
 using Mawasem.Domain.Delivery;
+using Mawasem.Domain.Enums;
 using Mawasem.Domain.Identity;
 using Mawasem.Infrastructure.Persistence.Contexts;
 
@@ -30,7 +31,11 @@ public sealed partial class CheckoutService : ICheckoutService
 
         public required Cart Cart { get; init; }
 
-        public required UserAddress Address { get; init; }
+        public required UserAddress? Address { get; init; }
+
+        public required DeliveryMethod DeliveryMethod { get; init; }
+
+        public required PaymentMethod PaymentMethod { get; init; }
 
         public required IReadOnlyCollection<CheckoutLine> Lines { get; init; }
 

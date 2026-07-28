@@ -9,16 +9,17 @@ public sealed class IdentityPermissionSeeder
 {
     private const string SystemUserName = "System";
 
-    private static readonly string[]
-        RetiredComplaintPermissionNames =
-        {
-            "Complaints.Edit" ,
-            "Complaints.Assign" ,
-            "Complaints.Close"
-        };
+    private static readonly string[] RetiredComplaintPermissionNames =
+    {
+        "Complaints.Edit",
+        "Complaints.Assign",
+        "Complaints.Close"
+    };
 
     private readonly MawasemDbContext _dbContext;
+
     private readonly RoleManager<ApplicationRole> _roleManager;
+
     private readonly TimeProvider _timeProvider;
 
     public IdentityPermissionSeeder(
@@ -34,12 +35,16 @@ public sealed class IdentityPermissionSeeder
     public async Task SeedAsync(
         CancellationToken cancellationToken = default )
     {
-        await SeedPermissionsAsync(cancellationToken);
+        await SeedPermissionsAsync(
+            cancellationToken);
 
         await RetireComplaintPermissionsAsync(
             cancellationToken);
 
         await AssignSuperAdminPermissionsAsync(
+            cancellationToken);
+
+        await AssignStoreEmployeePermissionsAsync(
             cancellationToken);
 
         await RemoveCustomerPermissionsAsync(
@@ -81,10 +86,18 @@ public sealed class IdentityPermissionSeeder
             {
                 if ( existingPermission.IsDeleted )
                 {
-                    existingPermission.IsDeleted = false;
-                    existingPermission.DeletedOn = null;
-                    existingPermission.DeletedBy = null;
-                    existingPermission.LastModifiedOn = now;
+                    existingPermission.IsDeleted =
+                        false;
+
+                    existingPermission.DeletedOn =
+                        null;
+
+                    existingPermission.DeletedBy =
+                        null;
+
+                    existingPermission.LastModifiedOn =
+                        now;
+
                     existingPermission.LastModifiedBy =
                         SystemUserName;
                 }
@@ -95,17 +108,24 @@ public sealed class IdentityPermissionSeeder
             var permission =
                 new Permission
                 {
-                    Name = permissionName ,
+                    Name =
+                        permissionName ,
+
                     Description =
                         CreateDescription(permissionName) ,
 
-                    CreatedOn = now ,
-                    CreatedBy = SystemUserName ,
+                    CreatedOn =
+                        now ,
 
-                    IsDeleted = false
+                    CreatedBy =
+                        SystemUserName ,
+
+                    IsDeleted =
+                        false
                 };
 
-            _dbContext.Permissions.Add(permission);
+            _dbContext.Permissions.Add(
+                permission);
 
             permissionsByName.Add(
                 permissionName ,
@@ -161,24 +181,33 @@ public sealed class IdentityPermissionSeeder
         var now =
             _timeProvider.GetUtcNow();
 
-        foreach ( var permission
-            in retiredPermissions )
+        foreach ( var permission in retiredPermissions )
         {
             if ( permission.IsDeleted )
             {
                 continue;
             }
 
-            permission.IsDeleted = true;
-            permission.DeletedOn = now;
-            permission.DeletedBy = SystemUserName;
-            permission.LastModifiedOn = now;
-            permission.LastModifiedBy = SystemUserName;
+            permission.IsDeleted =
+                true;
+
+            permission.DeletedOn =
+                now;
+
+            permission.DeletedBy =
+                SystemUserName;
+
+            permission.LastModifiedOn =
+                now;
+
+            permission.LastModifiedBy =
+                SystemUserName;
         }
 
         await _dbContext.SaveChangesAsync(
             cancellationToken);
     }
+
     private async Task AssignSuperAdminPermissionsAsync(
         CancellationToken cancellationToken )
     {
@@ -199,20 +228,19 @@ public sealed class IdentityPermissionSeeder
                     !permission.IsDeleted &&
                     SystemPermissions.All.Contains(
                         permission.Name))
-                .Select(permission => permission.Id)
+                .Select(permission =>
+                    permission.Id)
                 .ToListAsync(cancellationToken);
 
-        var assignedPermissionIdList =
-            await _dbContext.RolePermissions
+        var assignedPermissionIds =
+            ( await _dbContext.RolePermissions
                 .Where(rolePermission =>
                     rolePermission.RoleId ==
                     superAdminRole.Id)
                 .Select(rolePermission =>
                     rolePermission.PermissionId)
-                .ToListAsync(cancellationToken);
-
-        var assignedPermissionIds =
-            assignedPermissionIdList.ToHashSet();
+                .ToListAsync(cancellationToken) )
+            .ToHashSet();
 
         foreach ( var permissionId in permissionIds )
         {
@@ -225,8 +253,87 @@ public sealed class IdentityPermissionSeeder
             _dbContext.RolePermissions.Add(
                 new RolePermission
                 {
-                    RoleId = superAdminRole.Id ,
-                    PermissionId = permissionId
+                    RoleId =
+                        superAdminRole.Id ,
+
+                    PermissionId =
+                        permissionId
+                });
+        }
+    }
+
+    private async Task AssignStoreEmployeePermissionsAsync(
+        CancellationToken cancellationToken )
+    {
+        var storeEmployeeRole =
+            await _roleManager.FindByNameAsync(
+                SystemRoles.StoreEmployee);
+
+        if ( storeEmployeeRole is null )
+        {
+            throw new InvalidOperationException(
+                "The StoreEmployee role was not found. " +
+                "Run the role seeder before the permission seeder.");
+        }
+
+        var requiredPermissionNames =
+            new[]
+            {
+                SystemPermissions.Orders.CreateStoreOrder,
+                SystemPermissions.Orders.CollectStorePickup,
+                SystemPermissions.Orders.ProcessStoreReturn
+            };
+
+        var permissions =
+            await _dbContext.Permissions
+                .Where(permission =>
+                    requiredPermissionNames.Contains(
+                        permission.Name) &&
+                    !permission.IsDeleted)
+                .ToListAsync(cancellationToken);
+
+        if ( permissions.Count !=
+            requiredPermissionNames.Length )
+        {
+            throw new InvalidOperationException(
+                "One or more required StoreEmployee permissions " +
+                "were not found.");
+        }
+
+        var permissionIds =
+            permissions
+                .Select(permission =>
+                    permission.Id)
+                .ToArray();
+
+        var assignedPermissionIds =
+            ( await _dbContext.RolePermissions
+                .Where(rolePermission =>
+                    rolePermission.RoleId ==
+                        storeEmployeeRole.Id &&
+                    permissionIds.Contains(
+                        rolePermission.PermissionId))
+                .Select(rolePermission =>
+                    rolePermission.PermissionId)
+                .ToListAsync(cancellationToken) )
+            .ToHashSet();
+
+        foreach ( var permissionId in permissionIds )
+        {
+            if ( assignedPermissionIds.Contains(
+                    permissionId) )
+            {
+                continue;
+            }
+
+            _dbContext.RolePermissions.Add(
+                new RolePermission
+                {
+                    RoleId =
+                        storeEmployeeRole.Id ,
+
+                    PermissionId =
+                        permissionId
                 });
         }
     }
@@ -269,7 +376,7 @@ public sealed class IdentityPermissionSeeder
                 .SingleOrDefaultAsync(
                     permission =>
                         permission.Name ==
-                        SystemPermissions.Dashboard.Access &&
+                            SystemPermissions.Dashboard.Access &&
                         !permission.IsDeleted ,
                     cancellationToken);
 
@@ -282,7 +389,8 @@ public sealed class IdentityPermissionSeeder
         foreach ( var roleName in SystemRoles.DashboardRoles )
         {
             var role =
-                await _roleManager.FindByNameAsync(roleName);
+                await _roleManager.FindByNameAsync(
+                    roleName);
 
             if ( role is null )
             {
@@ -293,9 +401,10 @@ public sealed class IdentityPermissionSeeder
             var alreadyAssigned =
                 await _dbContext.RolePermissions.AnyAsync(
                     rolePermission =>
-                        rolePermission.RoleId == role.Id &&
+                        rolePermission.RoleId ==
+                            role.Id &&
                         rolePermission.PermissionId ==
-                        dashboardAccessPermission.Id ,
+                            dashboardAccessPermission.Id ,
                     cancellationToken);
 
             if ( alreadyAssigned )
@@ -306,7 +415,9 @@ public sealed class IdentityPermissionSeeder
             _dbContext.RolePermissions.Add(
                 new RolePermission
                 {
-                    RoleId = role.Id ,
+                    RoleId =
+                        role.Id ,
+
                     PermissionId =
                         dashboardAccessPermission.Id
                 });

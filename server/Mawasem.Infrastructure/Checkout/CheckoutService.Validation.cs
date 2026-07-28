@@ -1,5 +1,6 @@
 ﻿using Mawasem.Application.Features.Checkout.Models;
 using Mawasem.Domain.Carts;
+using Mawasem.Domain.Delivery;
 using Mawasem.Domain.Enums;
 using Mawasem.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,16 +12,44 @@ public sealed partial class CheckoutService
     private async Task<CheckoutResult<CheckoutContext>>
         LoadCheckoutContextAsync(
             int userId ,
-            int userAddressId ,
+            int? userAddressId ,
+            DeliveryMethod deliveryMethod ,
             PaymentMethod paymentMethod ,
             bool trackEntities ,
             CancellationToken cancellationToken )
     {
-        if ( paymentMethod != PaymentMethod.CashOnDelivery )
+        if ( deliveryMethod != DeliveryMethod.HomeDelivery &&
+            deliveryMethod != DeliveryMethod.StorePickup )
+        {
+            return CheckoutResult<CheckoutContext>.Failure(
+                CheckoutErrorCodes.DeliveryMethodNotSupported ,
+                "The selected delivery method is not supported.");
+        }
+
+        if ( deliveryMethod == DeliveryMethod.HomeDelivery &&
+            paymentMethod != PaymentMethod.CashOnDelivery )
         {
             return CheckoutResult<CheckoutContext>.Failure(
                 CheckoutErrorCodes.PaymentMethodNotSupported ,
-                "Only Cash on Delivery is currently supported.");
+                "Home delivery currently supports only Cash on Delivery.");
+        }
+
+        if ( deliveryMethod == DeliveryMethod.StorePickup &&
+            paymentMethod != PaymentMethod.CashAtStore )
+        {
+            return CheckoutResult<CheckoutContext>.Failure(
+                CheckoutErrorCodes.PaymentMethodNotSupported ,
+                "Store pickup orders must initially use Cash at Store. " +
+                "The final in-store payment method is recorded when collected.");
+        }
+
+        if ( deliveryMethod == DeliveryMethod.HomeDelivery &&
+            ( !userAddressId.HasValue ||
+                userAddressId.Value <= 0 ) )
+        {
+            return CheckoutResult<CheckoutContext>.Failure(
+                CheckoutErrorCodes.AddressRequired ,
+                "A customer address is required for home delivery.");
         }
 
         IQueryable<ApplicationUser> customerQuery =
@@ -150,70 +179,82 @@ public sealed partial class CheckoutService
                 });
         }
 
-        var addressQuery =
-            _dbContext.UserAddresses
-                .Include(candidate =>
-                    candidate.DeliveryArea)
-                .AsQueryable();
+        UserAddress? address = null;
 
-        if ( !trackEntities )
+        decimal deliveryFee = 0m;
+
+        if ( deliveryMethod == DeliveryMethod.HomeDelivery )
         {
-            addressQuery =
-                addressQuery.AsNoTracking();
-        }
+            var addressQuery =
+                _dbContext.UserAddresses
+                    .Include(candidate =>
+                        candidate.DeliveryArea)
+                    .AsQueryable();
 
-        var address = await addressQuery
-            .SingleOrDefaultAsync(
-                candidate =>
-                    candidate.Id == userAddressId &&
-                    !candidate.IsDeleted ,
-                cancellationToken);
+            if ( !trackEntities )
+            {
+                addressQuery =
+                    addressQuery.AsNoTracking();
+            }
 
-        if ( address is null )
-        {
-            return CheckoutResult<CheckoutContext>.Failure(
-                CheckoutErrorCodes.AddressNotFound ,
-                "The selected customer address was not found.");
-        }
+            address = await addressQuery
+                .SingleOrDefaultAsync(
+                    candidate =>
+                        candidate.Id == userAddressId!.Value &&
+                        !candidate.IsDeleted ,
+                    cancellationToken);
 
-        if ( address.UserId != userId )
-        {
-            return CheckoutResult<CheckoutContext>.Failure(
-                CheckoutErrorCodes.AddressNotOwned ,
-                "The selected address does not belong to the customer.");
-        }
+            if ( address is null )
+            {
+                return CheckoutResult<CheckoutContext>.Failure(
+                    CheckoutErrorCodes.AddressNotFound ,
+                    "The selected customer address was not found.");
+            }
 
-        if ( !address.IsActive )
-        {
-            return CheckoutResult<CheckoutContext>.Failure(
-                CheckoutErrorCodes.AddressInactive ,
-                "The selected customer address is inactive.");
-        }
+            if ( address.UserId != userId )
+            {
+                return CheckoutResult<CheckoutContext>.Failure(
+                    CheckoutErrorCodes.AddressNotOwned ,
+                    "The selected address does not belong to the customer.");
+            }
 
-        var deliveryArea =
-            address.DeliveryArea;
+            if ( !address.IsActive )
+            {
+                return CheckoutResult<CheckoutContext>.Failure(
+                    CheckoutErrorCodes.AddressInactive ,
+                    "The selected customer address is inactive.");
+            }
 
-        if ( deliveryArea is null ||
-            deliveryArea.IsDeleted )
-        {
-            return CheckoutResult<CheckoutContext>.Failure(
-                CheckoutErrorCodes.DeliveryAreaNotFound ,
-                "The delivery area associated with the address was not found.");
-        }
+            var deliveryArea =
+                address.DeliveryArea;
 
-        if ( !deliveryArea.IsActive )
-        {
-            return CheckoutResult<CheckoutContext>.Failure(
-                CheckoutErrorCodes.DeliveryAreaInactive ,
-                "The delivery area associated with the address is inactive.");
-        }
+            if ( deliveryArea is null ||
+                deliveryArea.IsDeleted )
+            {
+                return CheckoutResult<CheckoutContext>.Failure(
+                    CheckoutErrorCodes.DeliveryAreaNotFound ,
+                    "The delivery area associated with the address was not found.");
+            }
 
-        if ( deliveryArea.Status !=
-            DeliveryAreaStatus.Confirmed )
-        {
-            return CheckoutResult<CheckoutContext>.Failure(
-                CheckoutErrorCodes.DeliveryAreaNotConfirmed ,
-                "Checkout is available only for confirmed delivery areas.");
+            if ( !deliveryArea.IsActive )
+            {
+                return CheckoutResult<CheckoutContext>.Failure(
+                    CheckoutErrorCodes.DeliveryAreaInactive ,
+                    "The delivery area associated with the address is inactive.");
+            }
+
+            if ( deliveryArea.Status !=
+                DeliveryAreaStatus.Confirmed )
+            {
+                return CheckoutResult<CheckoutContext>.Failure(
+                    CheckoutErrorCodes.DeliveryAreaNotConfirmed ,
+                    "Checkout is available only for confirmed delivery areas.");
+            }
+
+            deliveryFee =
+                deliveryArea.IsFreeDelivery
+                    ? 0m
+                    : deliveryArea.DeliveryFee;
         }
 
         var subTotal = decimal.Round(
@@ -222,11 +263,6 @@ public sealed partial class CheckoutService
             MidpointRounding.AwayFromZero);
 
         const decimal discount = 0m;
-
-        var deliveryFee =
-            deliveryArea.IsFreeDelivery
-                ? 0m
-                : deliveryArea.DeliveryFee;
 
         var totalAmount = decimal.Round(
             subTotal - discount + deliveryFee ,
@@ -239,6 +275,8 @@ public sealed partial class CheckoutService
                 Customer = customer ,
                 Cart = cart ,
                 Address = address ,
+                DeliveryMethod = deliveryMethod ,
+                PaymentMethod = paymentMethod ,
                 Lines = lines ,
                 SubTotal = subTotal ,
                 Discount = discount ,

@@ -22,6 +22,8 @@ using Mawasem.Application.Features.Reports.Interfaces;
 using Mawasem.Application.Features.Reviews.Interfaces;
 using Mawasem.Application.Features.Roles.Interfaces;
 using Mawasem.Application.Features.Seasons.Interfaces;
+using Mawasem.Application.Features.StoreOrders.Interfaces;
+using Mawasem.Application.Features.StoreReturns.Interfaces;
 using Mawasem.Domain.Identity;
 using Mawasem.Infrastructure.Addresses;
 using Mawasem.Infrastructure.Authentication;
@@ -45,6 +47,8 @@ using Mawasem.Infrastructure.Reviews;
 using Mawasem.Infrastructure.Roles;
 using Mawasem.Infrastructure.Seasons;
 using Mawasem.Infrastructure.Storage.Images;
+using Mawasem.Infrastructure.StoreOrders;
+using Mawasem.Infrastructure.StoreReturns;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -347,6 +351,18 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     ICheckoutService ,
     CheckoutService>();
+
+builder.Services.AddScoped<
+    IStoreOrderService ,
+    StoreOrderService>();
+
+builder.Services.AddScoped<
+    IStorePickupCollectionService ,
+    StorePickupCollectionService>();
+
+builder.Services.AddScoped<
+    IStoreReturnService ,
+    StoreReturnService>();
 
 builder.Services.AddScoped<
     IDeliveryAreaService ,

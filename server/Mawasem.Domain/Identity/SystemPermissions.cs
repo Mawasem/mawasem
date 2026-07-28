@@ -56,10 +56,23 @@ public static class SystemPermissions
 
     public static class Orders
     {
-        public const string View = "Orders.View";
-        public const string CreateStoreOrder = "Orders.CreateStoreOrder";
-        public const string UpdateStatus = "Orders.UpdateStatus";
-        public const string Cancel = "Orders.Cancel";
+        public const string View =
+            "Orders.View";
+
+        public const string CreateStoreOrder =
+            "Orders.CreateStoreOrder";
+
+        public const string CollectStorePickup =
+            "Orders.CollectStorePickup";
+
+        public const string ProcessStoreReturn =
+            "Orders.ProcessStoreReturn";
+
+        public const string UpdateStatus =
+            "Orders.UpdateStatus";
+
+        public const string Cancel =
+            "Orders.Cancel";
     }
 
     public static class Refunds
@@ -93,6 +106,7 @@ public static class SystemPermissions
         public const string Unblock = "Employees.Unblock";
         public const string ResetPassword = "Employees.ResetPassword";
         public const string AssignRoles = "Employees.AssignRoles";
+
         public const string AssignPermissions =
             "Employees.AssignPermissions";
     }
@@ -100,6 +114,7 @@ public static class SystemPermissions
     public static class Roles
     {
         public const string View = "Roles.View";
+
         public const string ManagePermissions =
             "Roles.ManagePermissions";
     }
@@ -169,6 +184,8 @@ public static class SystemPermissions
 
             Orders.View,
             Orders.CreateStoreOrder,
+            Orders.CollectStorePickup,
+            Orders.ProcessStoreReturn,
             Orders.UpdateStatus,
             Orders.Cancel,
 
@@ -209,6 +226,6 @@ public static class SystemPermissions
             Reports.Export,
 
             Complaints.View,
-            Complaints.Create,
+            Complaints.Create
         };
 }

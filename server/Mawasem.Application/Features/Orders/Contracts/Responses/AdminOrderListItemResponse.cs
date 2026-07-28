@@ -11,7 +11,8 @@ public sealed record AdminOrderListItemResponse
 
     public DateTime OrderDate { get; init; }
 
-    public int CustomerUserId { get; init; }
+    // Null for anonymous walk-in store sales.
+    public int? CustomerUserId { get; init; }
 
     public string CustomerNameAr { get; init; } =
         string.Empty;

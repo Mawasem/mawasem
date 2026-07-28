@@ -41,4 +41,7 @@ public class OrderItem : BaseAuditableEntity
 
     // Refund support
     public int RefundedQuantity { get; set; }
+
+    public ICollection<StoreReturnItem> StoreReturnItems { get; set; } =
+    new List<StoreReturnItem>();
 }

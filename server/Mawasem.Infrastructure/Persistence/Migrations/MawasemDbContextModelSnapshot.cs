@@ -1351,8 +1351,15 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("PaidAtUtc")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int");
+
+                    b.Property<string>("PaymentReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("int");
@@ -1425,7 +1432,7 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     b.Property<int?>("UserAddressId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -1459,6 +1466,8 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                         {
                             t.HasCheckConstraint("CK_Orders_Amounts_NonNegative", "[SubTotal] >= 0 AND [Discount] >= 0 AND [DeliveryFee] >= 0 AND [TotalAmount] >= 0");
 
+                            t.HasCheckConstraint("CK_Orders_CustomerAssociation", "([OrderSource] = 1 AND [UserId] IS NOT NULL) OR ([OrderSource] = 2 AND [UserId] IS NULL)");
+
                             t.HasCheckConstraint("CK_Orders_DeliveryMethod", "[DeliveryMethod] IN (1, 2)");
 
                             t.HasCheckConstraint("CK_Orders_Discount_NotGreaterThan_SubTotal", "[Discount] <= [SubTotal]");
@@ -1467,9 +1476,13 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
 
                             t.HasCheckConstraint("CK_Orders_OrderStatus", "[OrderStatus] IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)");
 
-                            t.HasCheckConstraint("CK_Orders_PaymentMethod", "[PaymentMethod] IN (1, 2)");
+                            t.HasCheckConstraint("CK_Orders_PaymentMethod", "[PaymentMethod] IN (1, 2, 3, 4, 5)");
 
                             t.HasCheckConstraint("CK_Orders_PaymentStatus", "[PaymentStatus] IN (1, 2, 3, 4, 5)");
+
+                            t.HasCheckConstraint("CK_Orders_PhysicalPaymentReference", "[PaymentMethod] NOT IN (4, 5) OR ([PaymentReference] IS NOT NULL AND LTRIM(RTRIM([PaymentReference])) <> '')");
+
+                            t.HasCheckConstraint("CK_Orders_StoreSaleRules", "[OrderSource] <> 2 OR ([DeliveryMethod] = 2 AND [PaymentMethod] IN (3, 4, 5) AND [PaymentStatus] IN (2, 4, 5) AND [PaidAtUtc] IS NOT NULL)");
                         });
                 });
 
@@ -1920,6 +1933,148 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                             t.HasCheckConstraint("CK_RefundRequestItems_TotalRefundAmount_NonNegative", "[TotalRefundAmount] >= 0");
 
                             t.HasCheckConstraint("CK_RefundRequestItems_UnitRefundAmount_NonNegative", "[UnitRefundAmount] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Mawasem.Domain.Orders.StoreReturn", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("DeletedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModifiedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProcessedByEmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RefundPaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RefundPaymentReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ReturnNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("ReturnedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TotalRefundAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProcessedByEmployeeId");
+
+                    b.HasIndex("ReturnNumber")
+                        .IsUnique();
+
+                    b.HasIndex("ReturnedAtUtc");
+
+                    b.ToTable("StoreReturns", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_StoreReturns_PhysicalPaymentReference", "[RefundPaymentMethod] NOT IN (4, 5) OR ([RefundPaymentReference] IS NOT NULL AND LTRIM(RTRIM([RefundPaymentReference])) <> '')");
+
+                            t.HasCheckConstraint("CK_StoreReturns_RefundPaymentMethod", "[RefundPaymentMethod] IN (3, 4, 5)");
+
+                            t.HasCheckConstraint("CK_StoreReturns_TotalRefundAmount_NonNegative", "[TotalRefundAmount] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Mawasem.Domain.Orders.StoreReturnItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("DeletedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastModifiedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("StoreReturnId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalRefundAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitRefundAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.HasIndex("StoreReturnId");
+
+                    b.HasIndex("StoreReturnId", "OrderItemId")
+                        .IsUnique();
+
+                    b.ToTable("StoreReturnItems", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_StoreReturnItems_Amounts_NonNegative", "[UnitRefundAmount] >= 0 AND [TotalRefundAmount] >= 0");
+
+                            t.HasCheckConstraint("CK_StoreReturnItems_Quantity_Positive", "[Quantity] > 0");
                         });
                 });
 
@@ -2899,8 +3054,7 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     b.HasOne("Mawasem.Domain.Identity.ApplicationUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ShippingDeliveryArea");
 
@@ -3017,6 +3171,44 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     b.Navigation("OrderItem");
 
                     b.Navigation("RefundRequest");
+                });
+
+            modelBuilder.Entity("Mawasem.Domain.Orders.StoreReturn", b =>
+                {
+                    b.HasOne("Mawasem.Domain.Orders.Order", "Order")
+                        .WithMany("StoreReturns")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Mawasem.Domain.Identity.ApplicationUser", "ProcessedByEmployee")
+                        .WithMany()
+                        .HasForeignKey("ProcessedByEmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("ProcessedByEmployee");
+                });
+
+            modelBuilder.Entity("Mawasem.Domain.Orders.StoreReturnItem", b =>
+                {
+                    b.HasOne("Mawasem.Domain.Orders.OrderItem", "OrderItem")
+                        .WithMany("StoreReturnItems")
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Mawasem.Domain.Orders.StoreReturn", "StoreReturn")
+                        .WithMany("Items")
+                        .HasForeignKey("StoreReturnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderItem");
+
+                    b.Navigation("StoreReturn");
                 });
 
             modelBuilder.Entity("Mawasem.Domain.Reviews.Review", b =>
@@ -3270,6 +3462,13 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     b.Navigation("RefundRequests");
 
                     b.Navigation("StatusHistory");
+
+                    b.Navigation("StoreReturns");
+                });
+
+            modelBuilder.Entity("Mawasem.Domain.Orders.OrderItem", b =>
+                {
+                    b.Navigation("StoreReturnItems");
                 });
 
             modelBuilder.Entity("Mawasem.Domain.Orders.RefundRequest", b =>
@@ -3277,6 +3476,11 @@ namespace Mawasem.Infrastructure.Persistence.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("PaymentTransactions");
+                });
+
+            modelBuilder.Entity("Mawasem.Domain.Orders.StoreReturn", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Product", b =>
