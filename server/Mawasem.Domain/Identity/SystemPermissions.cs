@@ -128,9 +128,6 @@ public static class SystemPermissions
     {
         public const string View = "Complaints.View";
         public const string Create = "Complaints.Create";
-        public const string Edit = "Complaints.Edit";
-        public const string Assign = "Complaints.Assign";
-        public const string Close = "Complaints.Close";
     }
 
     public static IReadOnlyCollection<string> All { get; } =
@@ -213,8 +210,5 @@ public static class SystemPermissions
 
             Complaints.View,
             Complaints.Create,
-            Complaints.Edit,
-            Complaints.Assign,
-            Complaints.Close
         };
 }

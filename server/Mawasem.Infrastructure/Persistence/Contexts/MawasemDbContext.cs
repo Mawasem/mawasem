@@ -1,4 +1,5 @@
 ﻿using Mawasem.Domain.Carts;
+using Mawasem.Domain.Complaints;
 using Mawasem.Domain.Catalog;
 using Mawasem.Domain.Delivery;
 using Mawasem.Domain.Identity;
@@ -104,6 +105,13 @@ public class MawasemDbContext
     public DbSet<RefundPaymentTransaction>
         RefundPaymentTransactions =>
             Set<RefundPaymentTransaction>();
+
+    #endregion
+
+    #region Complaints
+
+    public DbSet<Complaint> Complaints =>
+        Set<Complaint>();
 
     #endregion
 

@@ -10,6 +10,7 @@ using Mawasem.Application.Features.Carts.Interfaces;
 using Mawasem.Application.Features.Categories.Interfaces;
 using Mawasem.Application.Features.Checkout.Interfaces;
 using Mawasem.Application.Features.Collections.Interfaces;
+using Mawasem.Application.Features.Complaints.Interfaces;
 using Mawasem.Application.Features.Customers.Interfaces;
 using Mawasem.Application.Features.DeliveryAreas.Interfaces;
 using Mawasem.Application.Features.Employees.Interfaces;
@@ -29,6 +30,7 @@ using Mawasem.Infrastructure.Carts;
 using Mawasem.Infrastructure.Categories;
 using Mawasem.Infrastructure.Checkout;
 using Mawasem.Infrastructure.Collections;
+using Mawasem.Infrastructure.Complaints;
 using Mawasem.Infrastructure.Customers;
 using Mawasem.Infrastructure.DeliveryAreas;
 using Mawasem.Infrastructure.Employees;
@@ -381,6 +383,10 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     ICollectionManagementService ,
     CollectionManagementService>();
+
+builder.Services.AddScoped<
+    IComplaintManagementService ,
+    ComplaintManagementService>();
 
 builder.Services.AddScoped<
     ICustomerManagementService ,
