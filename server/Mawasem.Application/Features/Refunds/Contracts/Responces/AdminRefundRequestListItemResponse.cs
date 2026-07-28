@@ -11,7 +11,7 @@ public sealed record AdminRefundRequestListItemResponse
     public string OrderNumber { get; init; } =
         string.Empty;
 
-    public int CustomerUserId { get; init; }
+    public int? CustomerUserId { get; init; }
 
     public string CustomerNameAr { get; init; } =
         string.Empty;
@@ -37,9 +37,9 @@ public sealed record AdminRefundRequestListItemResponse
 
     public DateTime? ReviewedAt { get; init; }
 
-    public int? ReviewedByEmployeeId { get; init; }
+    public int? CompletedByEmployeeId { get; init; }
 
     public DateTime? CompletedAt { get; init; }
 
-    public int? CompletedByEmployeeId { get; init; }
+    public int? ReviewedByEmployeeId { get; init; }
 }

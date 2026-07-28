@@ -28,7 +28,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
             tableBuilder.HasCheckConstraint(
                 "CK_Orders_PaymentMethod" ,
-                "[PaymentMethod] IN (1, 2)");
+                "[PaymentMethod] IN (1, 2, 3, 4, 5)");
 
             tableBuilder.HasCheckConstraint(
                 "CK_Orders_PaymentStatus" ,
@@ -41,6 +41,25 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             tableBuilder.HasCheckConstraint(
                 "CK_Orders_OrderSource" ,
                 "[OrderSource] IN (1, 2)");
+
+            tableBuilder.HasCheckConstraint(
+                "CK_Orders_CustomerAssociation" ,
+                "([OrderSource] = 1 AND [UserId] IS NOT NULL) OR " +
+                "([OrderSource] = 2 AND [UserId] IS NULL)");
+
+            tableBuilder.HasCheckConstraint(
+                "CK_Orders_StoreSaleRules" ,
+                "[OrderSource] <> 2 OR " +
+                "([DeliveryMethod] = 2 AND " +
+                "[PaymentMethod] IN (3, 4, 5) AND " +
+                "[PaymentStatus] IN (2, 4, 5) AND " +
+                "[PaidAtUtc] IS NOT NULL)");
+
+            tableBuilder.HasCheckConstraint(
+                "CK_Orders_PhysicalPaymentReference" ,
+                "[PaymentMethod] NOT IN (4, 5) OR " +
+                "([PaymentReference] IS NOT NULL AND " +
+                "LTRIM(RTRIM([PaymentReference])) <> '')");
         });
 
         builder.HasKey(x => x.Id);
@@ -141,6 +160,11 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(x => x.PaymentStatus)
             .HasConversion<int>()
             .IsRequired();
+
+        builder.Property(x => x.PaymentReference)
+            .HasMaxLength(200);
+
+        builder.Property(x => x.PaidAtUtc);
 
         builder.Property(x => x.DeliveryMethod)
             .HasConversion<int>()

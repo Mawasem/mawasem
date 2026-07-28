@@ -11,7 +11,7 @@ public sealed record AdminRefundRequestDetailsResponse
     public string OrderNumber { get; init; } =
         string.Empty;
 
-    public int CustomerUserId { get; init; }
+    public int? CustomerUserId { get; init; }
 
     public string CustomerNameAr { get; init; } =
         string.Empty;

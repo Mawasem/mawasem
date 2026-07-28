@@ -6,9 +6,11 @@ public sealed record CheckoutPreviewResponse
 {
     public int CartId { get; init; }
 
-    public int UserAddressId { get; init; }
+    public int? UserAddressId { get; init; }
 
-    public int DeliveryAreaId { get; init; }
+    public int? DeliveryAreaId { get; init; }
+
+    public DeliveryMethod DeliveryMethod { get; init; }
 
     public IReadOnlyCollection<CheckoutItemResponse> Items { get; init; } =
         Array.Empty<CheckoutItemResponse>();

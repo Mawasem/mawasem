@@ -2,7 +2,8 @@
 
 public sealed record AdminOrderCustomerResponse
 {
-    public int UserId { get; init; }
+    // Null for anonymous walk-in store sales.
+    public int? UserId { get; init; }
 
     public string NameAr { get; init; } =
         string.Empty;

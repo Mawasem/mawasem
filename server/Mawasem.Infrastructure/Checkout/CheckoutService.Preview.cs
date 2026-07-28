@@ -18,6 +18,7 @@ public sealed partial class CheckoutService
             await LoadCheckoutContextAsync(
                 userId ,
                 request.UserAddressId ,
+                request.DeliveryMethod ,
                 request.PaymentMethod ,
                 trackEntities: false ,
                 cancellationToken);
@@ -31,8 +32,7 @@ public sealed partial class CheckoutService
 
         var response =
             CreatePreviewResponse(
-                checkoutResult.Response! ,
-                request.PaymentMethod);
+                checkoutResult.Response!);
 
         return CheckoutResult<CheckoutPreviewResponse>.Success(
             response);

@@ -12,8 +12,7 @@ public sealed partial class CheckoutService
 {
     private static CheckoutPreviewResponse
         CreatePreviewResponse(
-            CheckoutContext checkoutContext ,
-            PaymentMethod paymentMethod )
+            CheckoutContext checkoutContext )
     {
         var items = checkoutContext.Lines
             .Select(
@@ -79,10 +78,13 @@ public sealed partial class CheckoutService
                 checkoutContext.Cart.Id ,
 
             UserAddressId =
-                checkoutContext.Address.Id ,
+                checkoutContext.Address?.Id ,
 
             DeliveryAreaId =
-                checkoutContext.Address.DeliveryAreaId ,
+                checkoutContext.Address?.DeliveryAreaId ,
+
+            DeliveryMethod =
+                checkoutContext.DeliveryMethod ,
 
             Items =
                 items ,
@@ -100,7 +102,7 @@ public sealed partial class CheckoutService
                 checkoutContext.TotalAmount ,
 
             PaymentMethod =
-                paymentMethod ,
+                checkoutContext.PaymentMethod ,
 
             CanPlaceOrder =
                 true ,
@@ -124,7 +126,7 @@ public sealed partial class CheckoutService
             checkoutContext.Address;
 
         var deliveryArea =
-            address.DeliveryArea;
+            address?.DeliveryArea;
 
         var order = new Order
         {
@@ -132,10 +134,10 @@ public sealed partial class CheckoutService
                 customer.Id ,
 
             UserAddressId =
-                address.Id ,
+                address?.Id ,
 
             ShippingDeliveryAreaId =
-                deliveryArea.Id ,
+                deliveryArea?.Id ,
 
             CustomerNameAr =
                 customer.FullNameAr ,
@@ -148,37 +150,37 @@ public sealed partial class CheckoutService
                 ?? string.Empty ,
 
             ShippingRecipientName =
-                address.RecipientName ,
+                address?.RecipientName ,
 
             ShippingRecipientPhone =
-                address.RecipientPhone ,
+                address?.RecipientPhone ,
 
             ShippingCity =
-                address.City ,
+                address?.City ,
 
             ShippingAreaName =
-                address.AreaName ,
+                address?.AreaName ,
 
             ShippingDetailedAddress =
-                address.DetailedAddress ,
+                address?.DetailedAddress ,
 
             ShippingBuildingNumber =
-                address.BuildingNumber ,
+                address?.BuildingNumber ,
 
             ShippingFloorNumber =
-                address.FloorNumber ,
+                address?.FloorNumber ,
 
             ShippingApartmentNumber =
-                address.ApartmentNumber ,
+                address?.ApartmentNumber ,
 
             ShippingLandmark =
-                address.Landmark ,
+                address?.Landmark ,
 
             ShippingDeliveryAreaNameAr =
-                deliveryArea.Name.Arabic ,
+                deliveryArea?.Name.Arabic ,
 
             ShippingDeliveryAreaNameEn =
-                deliveryArea.Name.English ,
+                deliveryArea?.Name.English ,
 
             OrderNumber =
                 CreateOrderNumber(now) ,
@@ -208,13 +210,13 @@ public sealed partial class CheckoutService
                 OrderStatus.Pending ,
 
             PaymentMethod =
-                PaymentMethod.CashOnDelivery ,
+                checkoutContext.PaymentMethod ,
 
             PaymentStatus =
                 PaymentStatus.Pending ,
 
             DeliveryMethod =
-                DeliveryMethod.HomeDelivery ,
+                checkoutContext.DeliveryMethod ,
 
             OrderSource =
                 OrderSource.Website ,
