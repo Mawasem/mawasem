@@ -482,7 +482,13 @@ public sealed class RolePermissionManagementService
             CancellationToken cancellationToken )
     {
         var systemRoleNames =
-            SystemRoles.All.ToArray();
+            SystemRoles.All
+                .Where(roleName =>
+                    !string.Equals(
+                        roleName ,
+                        SystemRoles.SuperAdmin ,
+                        StringComparison.OrdinalIgnoreCase))
+                .ToArray();
 
         var roles =
             await _dbContext.Roles
@@ -563,7 +569,6 @@ public sealed class RolePermissionManagementService
         var orderedRoleNames =
             new[]
             {
-                SystemRoles.SuperAdmin ,
                 SystemRoles.Admin ,
                 SystemRoles.SalesEmployee ,
                 SystemRoles.DeliveryEmployee ,
