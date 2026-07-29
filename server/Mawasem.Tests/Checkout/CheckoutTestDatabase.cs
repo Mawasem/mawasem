@@ -5,7 +5,6 @@ using Mawasem.Domain.Delivery;
 using Mawasem.Domain.Enums;
 using Mawasem.Domain.Identity;
 using Mawasem.Infrastructure.Persistence.Contexts;
-using Microsoft.Data.Sqlite;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -49,7 +48,9 @@ internal sealed class CheckoutTestDatabase
         _options =
             new DbContextOptionsBuilder<MawasemDbContext>()
                 .UseSqlite(
-                    $"Data Source={_databasePath};Foreign Keys=True")
+                    $"Data Source={_databasePath};" +
+                    "Foreign Keys=True;" +
+                    "Pooling=False")
                 .Options;
 
         using var dbContext =
@@ -153,6 +154,7 @@ internal sealed class CheckoutTestDatabase
                 SecurityStamp =
                     Guid.NewGuid().ToString()
             };
+
         var dashboardRole =
             new ApplicationRole
             {
@@ -168,6 +170,7 @@ internal sealed class CheckoutTestDatabase
                 ConcurrencyStamp =
                     Guid.NewGuid().ToString()
             };
+
         var brand =
             new Brand
             {
@@ -344,6 +347,7 @@ internal sealed class CheckoutTestDatabase
                 RoleId =
                     DashboardRoleId
             });
+
         dbContext.DeliveryAreas.Add(
             deliveryArea);
 
@@ -464,8 +468,6 @@ internal sealed class CheckoutTestDatabase
 
     public ValueTask DisposeAsync()
     {
-        SqliteConnection.ClearAllPools();
-
         if ( File.Exists(_databasePath) )
         {
             File.Delete(_databasePath);

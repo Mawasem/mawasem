@@ -67,17 +67,15 @@ public sealed class CheckoutConcurrencyTests
                 secondTask);
 
         var successfulResult =
-            Assert.Single(
-                results.Where(result =>
-                    result.Succeeded));
+            Assert.Single(results, result =>
+                    result.Succeeded);
 
         Assert.NotNull(
             successfulResult.Response);
 
         var failedResult =
-            Assert.Single(
-                results.Where(result =>
-                    !result.Succeeded));
+            Assert.Single(results, result =>
+                    !result.Succeeded);
 
         Assert.Contains(
             failedResult.ErrorCode ,

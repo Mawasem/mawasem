@@ -55,6 +55,7 @@ public sealed class DashboardAuthenticationService
             await _dbContext.Users
                 .Where(user =>
                     user.NormalizedEmail == normalizedEmail)
+                .OrderBy(user => user.Id)
                 .Take(2)
                 .ToListAsync(cancellationToken);
 
