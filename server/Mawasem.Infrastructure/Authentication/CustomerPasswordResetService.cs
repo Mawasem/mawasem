@@ -549,6 +549,7 @@ public sealed class CustomerPasswordResetService
                 .Where(user =>
                     user.PhoneNumber ==
                     normalizedPhoneNumber)
+                .OrderBy(user => user.Id)
                 .Take(2)
                 .ToListAsync(cancellationToken);
 

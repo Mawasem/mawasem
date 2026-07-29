@@ -1,0 +1,104 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "server/**"
+      - ".github/workflows/backend-ci.yml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "server/**"
+      - ".github/workflows/backend-ci.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build and test backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      ASPNETCORE_ENVIRONMENT: Development
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_NOLOGO: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore API
+        run: >
+          dotnet restore
+          server/Mawasem.API/Mawasem.API.csproj
+
+      - name: Restore tests
+        run: >
+          dotnet restore
+          server/Mawasem.Tests/Mawasem.Tests.csproj
+
+      - name: Build API
+        run: >
+          dotnet build
+          server/Mawasem.API/Mawasem.API.csproj
+          --configuration Release
+          --no-restore
+
+      - name: Build tests
+        run: >
+          dotnet build
+          server/Mawasem.Tests/Mawasem.Tests.csproj
+          --configuration Release
+          --no-restore
+
+      - name: Install EF Core tool
+        run: >
+          dotnet tool install
+          --global dotnet-ef
+          --version 8.0.28
+
+      - name: Check EF Core model
+        run: >
+          dotnet ef migrations has-pending-model-changes
+          --project server/Mawasem.Infrastructure/Mawasem.Infrastructure.csproj
+          --startup-project server/Mawasem.API/Mawasem.API.csproj
+          --configuration Release
+          --no-build
+
+      - name: Run tests
+        run: >
+          dotnet test
+          server/Mawasem.Tests/Mawasem.Tests.csproj
+          --configuration Release
+          --no-build
+          --logger "trx;LogFileName=backend-tests.trx"
+          --results-directory "${{ github.workspace }}/test-results"
+
+      - name: Check whitespace errors
+        run: git diff --check
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: test-results
+          if-no-files-found: warn
+          retention-days: 14

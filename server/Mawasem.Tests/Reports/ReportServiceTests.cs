@@ -61,10 +61,9 @@ public sealed class ReportServiceTests
             result.Response.Items.Count);
 
         var admin =
-            Assert.Single(
-                result.Response.Items.Where(item =>
+            Assert.Single(result.Response.Items, item =>
                     item.EmployeeId ==
-                    CheckoutTestDatabase.DashboardUserId));
+                    CheckoutTestDatabase.DashboardUserId);
 
         Assert.Contains(
             SystemRoles.Admin ,
@@ -108,10 +107,9 @@ public sealed class ReportServiceTests
             });
 
         var deliveryEmployee =
-            Assert.Single(
-                result.Response.Items.Where(item =>
+            Assert.Single(result.Response.Items, item =>
                     item.EmployeeId ==
-                    DeliveryEmployeeId));
+                    DeliveryEmployeeId);
 
         Assert.Contains(
             SystemRoles.DeliveryEmployee ,

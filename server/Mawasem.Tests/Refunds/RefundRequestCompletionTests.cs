@@ -116,9 +116,8 @@ public sealed class RefundRequestCompletionTests
             order.TotalAmount);
 
         var orderItem =
-            Assert.Single(
-                order.OrderItems.Where(item =>
-                    !item.IsDeleted));
+            Assert.Single(order.OrderItems, item =>
+                    !item.IsDeleted);
 
         Assert.Equal(
             2 ,
@@ -165,9 +164,8 @@ public sealed class RefundRequestCompletionTests
             refundRequest.CompletedByEmployeeId);
 
         var refundItem =
-            Assert.Single(
-                refundRequest.Items.Where(item =>
-                    !item.IsDeleted));
+            Assert.Single(refundRequest.Items, item =>
+                    !item.IsDeleted);
 
         Assert.Equal(
             1 ,
@@ -332,9 +330,8 @@ public sealed class RefundRequestCompletionTests
             order.PaymentStatus);
 
         var orderItem =
-            Assert.Single(
-                order.OrderItems.Where(item =>
-                    !item.IsDeleted));
+            Assert.Single(order.OrderItems, item =>
+                    !item.IsDeleted);
 
         // The approved quantity must be applied only once.
         Assert.Equal(
@@ -392,9 +389,8 @@ public sealed class RefundRequestCompletionTests
             refundRequest.Status);
 
         var refundItem =
-            Assert.Single(
-                refundRequest.Items.Where(item =>
-                    !item.IsDeleted));
+            Assert.Single(refundRequest.Items, item =>
+                    !item.IsDeleted);
 
         Assert.Equal(
             1 ,
@@ -513,9 +509,8 @@ public sealed class RefundRequestCompletionTests
                     scenario.OrderId);
 
         var orderItem =
-            Assert.Single(
-                order.OrderItems.Where(item =>
-                    !item.IsDeleted));
+            Assert.Single(order.OrderItems, item =>
+                    !item.IsDeleted);
 
         Assert.Equal(
             1 ,
@@ -776,9 +771,8 @@ public sealed class RefundRequestCompletionTests
         await updateContext.SaveChangesAsync();
 
         var orderItem =
-            Assert.Single(
-                order.OrderItems.Where(item =>
-                    !item.IsDeleted));
+            Assert.Single(order.OrderItems, item =>
+                    !item.IsDeleted);
 
         return new OrderInformation(
             order.Id ,

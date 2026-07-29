@@ -526,10 +526,9 @@ public sealed class BusinessDashboardReportTests
         int expectedCount )
     {
         var item =
-            Assert.Single(
-                items.Where(candidate =>
+            Assert.Single(items, candidate =>
                     candidate.Status ==
-                    status));
+                    status);
 
         Assert.Equal(
             expectedCount ,

@@ -275,9 +275,7 @@ public sealed class CartServiceTests
 
         Assert.Equal(
             5,
-            Assert.Single(
-                customerCart.Items.Where(item => !item.IsDeleted))
-                .Quantity);
+            Assert.Single(customerCart.Items, item => !item.IsDeleted).Quantity);
 
         var consumedGuestCart = await dbContext.Carts
             .SingleAsync(cart => cart.UserId == null);

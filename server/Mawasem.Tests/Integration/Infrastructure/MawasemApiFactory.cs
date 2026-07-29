@@ -4,7 +4,6 @@ using Mawasem.Infrastructure.Persistence.Contexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +21,9 @@ public sealed class MawasemApiFactory
 
     public const string SuperAdminPassword =
         "Integration1!";
+
+    public const string FrontendOrigin =
+        "http://localhost:5173";
 
     private const string TestJwtIssuer =
         "Mawasem.API.IntegrationTests";
@@ -42,6 +44,17 @@ public sealed class MawasemApiFactory
         Path.Combine(
             Path.GetTempPath() ,
             $"mawasem-api-integration-{Guid.NewGuid():N}.db");
+
+    protected override void ConfigureClient(
+        HttpClient client )
+    {
+        base.ConfigureClient(client);
+
+        client.DefaultRequestHeaders
+            .TryAddWithoutValidation(
+                "Origin" ,
+                FrontendOrigin);
+    }
 
     protected override void ConfigureWebHost(
         IWebHostBuilder builder )
@@ -82,6 +95,9 @@ public sealed class MawasemApiFactory
                         ["AdminSeed:FullNameEn"] =
                             "Integration Test Super Admin" ,
 
+                        ["Frontend:AllowedOrigins:0"] =
+                            FrontendOrigin ,
+
                         ["Logging:LogLevel:Default"] =
                             "Warning" ,
 
@@ -106,7 +122,9 @@ public sealed class MawasemApiFactory
                     options =>
                     {
                         options.UseSqlite(
-                            $"Data Source={_databasePath};Foreign Keys=True");
+                            $"Data Source={_databasePath};" +
+                            "Foreign Keys=True;" +
+                            "Pooling=False");
                     });
 
                 using var serviceProvider =
@@ -134,8 +152,6 @@ public sealed class MawasemApiFactory
         {
             return;
         }
-
-        SqliteConnection.ClearAllPools();
 
         TryDeleteDatabase();
     }
@@ -258,7 +274,7 @@ public sealed class MawasemApiFactory
         }
         catch ( IOException )
         {
-            // A pooled SQLite handle may remain briefly on Windows.
+            // A SQLite handle may remain briefly on Windows.
             // Cleanup must not change the HTTP test result.
         }
         catch ( UnauthorizedAccessException )

@@ -92,18 +92,20 @@ public sealed class HttpOnlyCookieAuthenticationTests
 
         AssertSecureHttpOnlyNoneCookie(
             Assert.Single(
-                cookies.Where(cookie =>
+                cookies ,
+                cookie =>
                     cookie.StartsWith(
                         "accessToken=" ,
-                        StringComparison.Ordinal))) ,
+                        StringComparison.Ordinal)) ,
             expectedPath: "/");
 
         AssertSecureHttpOnlyNoneCookie(
             Assert.Single(
-                cookies.Where(cookie =>
+                cookies ,
+                cookie =>
                     cookie.StartsWith(
                         "mawasem_customer_refresh_token=" ,
-                        StringComparison.Ordinal))) ,
+                        StringComparison.Ordinal)) ,
             expectedPath: "/api/auth");
     }
 
@@ -189,18 +191,20 @@ public sealed class HttpOnlyCookieAuthenticationTests
 
         AssertSecureHttpOnlyNoneCookie(
             Assert.Single(
-                cookies.Where(cookie =>
+                cookies ,
+                cookie =>
                     cookie.StartsWith(
                         "accessToken=" ,
-                        StringComparison.Ordinal))) ,
+                        StringComparison.Ordinal)) ,
             expectedPath: "/");
 
         AssertSecureHttpOnlyNoneCookie(
             Assert.Single(
-                cookies.Where(cookie =>
+                cookies ,
+                cookie =>
                     cookie.StartsWith(
                         "mawasem_dashboard_refresh_token=" ,
-                        StringComparison.Ordinal))) ,
+                        StringComparison.Ordinal)) ,
             expectedPath: "/api/admin/auth");
     }
 

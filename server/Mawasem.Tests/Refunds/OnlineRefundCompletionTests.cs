@@ -183,9 +183,8 @@ public sealed class OnlineRefundCompletionTests
             refundRequest.StockRestoredAtUtc);
 
         var refundItemAfterFailure =
-            Assert.Single(
-                refundRequest.Items.Where(item =>
-                    !item.IsDeleted));
+            Assert.Single(refundRequest.Items, item =>
+                    !item.IsDeleted);
 
         Assert.Equal(
             0 ,
@@ -227,9 +226,8 @@ public sealed class OnlineRefundCompletionTests
             order.OrderStatus);
 
         var orderItem =
-            Assert.Single(
-                order.OrderItems.Where(item =>
-                    !item.IsDeleted));
+            Assert.Single(order.OrderItems, item =>
+                    !item.IsDeleted);
 
         Assert.Equal(
             0 ,
@@ -348,9 +346,8 @@ public sealed class OnlineRefundCompletionTests
         await updateContext.SaveChangesAsync();
 
         var orderItem =
-            Assert.Single(
-                order.OrderItems.Where(item =>
-                    !item.IsDeleted));
+            Assert.Single(order.OrderItems, item =>
+                    !item.IsDeleted);
 
         return new OrderInformation(
             order.Id ,
