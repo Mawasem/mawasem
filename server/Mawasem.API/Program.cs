@@ -846,8 +846,6 @@ app.UseMiddleware<
 
 app.UseRateLimiter();
 
-app.UseRateLimiter();
-
 app.UseAuthentication();
 
 app.UseAuthorization();
