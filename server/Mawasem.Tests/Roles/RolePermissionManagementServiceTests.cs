@@ -10,6 +10,117 @@ namespace Mawasem.Tests.Roles;
 
 public sealed class RolePermissionManagementServiceTests
 {
+    [Fact]
+    public async Task GetListAsync_ExcludesSuperAdmin()
+    {
+        await using var dbContext =
+            CreateDbContext();
+
+        var superAdminRole =
+            CreateRole(
+                id: 1 ,
+                SystemRoles.SuperAdmin);
+
+        var adminRole =
+            CreateRole(
+                id: 2 ,
+                SystemRoles.Admin);
+
+        var actor =
+            CreateUser(
+                id: 1 ,
+                email: "superadmin@example.com");
+
+        dbContext.Roles.AddRange(
+            superAdminRole ,
+            adminRole);
+
+        dbContext.Users.Add(actor);
+
+        dbContext.UserRoles.Add(
+            new IdentityUserRole<int>
+            {
+                UserId = actor.Id ,
+                RoleId = superAdminRole.Id
+            });
+
+        await dbContext.SaveChangesAsync();
+
+        var service =
+            new RolePermissionManagementService(
+                dbContext);
+
+        var result =
+            await service.GetListAsync(
+                actor.Id);
+
+        Assert.True(result.Succeeded);
+        Assert.NotNull(result.Response);
+
+        Assert.DoesNotContain(
+            result.Response.Items ,
+            role =>
+                string.Equals(
+                    role.Name ,
+                    SystemRoles.SuperAdmin ,
+                    StringComparison.OrdinalIgnoreCase));
+
+        Assert.Contains(
+            result.Response.Items ,
+            role =>
+                string.Equals(
+                    role.Name ,
+                    SystemRoles.Admin ,
+                    StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task GetByNameAsync_SuperAdmin_ReturnsNotFound()
+    {
+        await using var dbContext =
+            CreateDbContext();
+
+        var superAdminRole =
+            CreateRole(
+                id: 1 ,
+                SystemRoles.SuperAdmin);
+
+        var actor =
+            CreateUser(
+                id: 1 ,
+                email: "superadmin@example.com");
+
+        dbContext.Roles.Add(
+            superAdminRole);
+
+        dbContext.Users.Add(actor);
+
+        dbContext.UserRoles.Add(
+            new IdentityUserRole<int>
+            {
+                UserId = actor.Id ,
+                RoleId = superAdminRole.Id
+            });
+
+        await dbContext.SaveChangesAsync();
+
+        var service =
+            new RolePermissionManagementService(
+                dbContext);
+
+        var result =
+            await service.GetByNameAsync(
+                actor.Id ,
+                SystemRoles.SuperAdmin);
+
+        Assert.False(result.Succeeded);
+        Assert.Null(result.Response);
+
+        Assert.Equal(
+            RoleManagementErrorCodes.NotFound ,
+            result.ErrorCode);
+    }
+
     [Theory]
     [InlineData(SystemRoles.Customer)]
     [InlineData(SystemRoles.SuperAdmin)]
