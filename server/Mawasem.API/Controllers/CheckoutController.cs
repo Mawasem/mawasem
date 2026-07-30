@@ -188,6 +188,20 @@ public sealed class CheckoutController : ControllerBase
                     detail:
                         errorMessage),
 
+            CheckoutErrorCodes.InvalidDeliveryMethod =>
+                CheckoutProblem(
+                    StatusCodes.Status400BadRequest ,
+                    "Invalid delivery method." ,
+                    errorCode ,
+                    errorMessage),
+
+            CheckoutErrorCodes.AddressRequired =>
+                CheckoutProblem(
+                    StatusCodes.Status400BadRequest ,
+                    "Delivery address required." ,
+                    errorCode ,
+                    errorMessage),
+
             CheckoutErrorCodes.AddressNotFound =>
                 Problem(
                     statusCode:
@@ -320,5 +334,28 @@ public sealed class CheckoutController : ControllerBase
                     detail:
                         "The Checkout operation could not be completed.")
         };
+    }
+
+    private ObjectResult CheckoutProblem(
+        int statusCode ,
+        string title ,
+        string errorCode ,
+        string? errorMessage )
+    {
+        var problemDetails = new ProblemDetails
+        {
+            Status = statusCode ,
+            Title = title ,
+            Detail =
+                errorMessage ??
+                "The checkout request could not be completed."
+        };
+
+        problemDetails.Extensions["code"] =
+            errorCode;
+
+        return StatusCode(
+            statusCode ,
+            problemDetails);
     }
 }

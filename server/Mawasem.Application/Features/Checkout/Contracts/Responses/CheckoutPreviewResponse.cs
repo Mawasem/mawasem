@@ -6,9 +6,9 @@ public sealed record CheckoutPreviewResponse
 {
     public int CartId { get; init; }
 
-    public int UserAddressId { get; init; }
+    public int? UserAddressId { get; init; }
 
-    public int DeliveryAreaId { get; init; }
+    public int? DeliveryAreaId { get; init; }
 
     public IReadOnlyCollection<CheckoutItemResponse> Items { get; init; } =
         Array.Empty<CheckoutItemResponse>();
@@ -22,6 +22,8 @@ public sealed record CheckoutPreviewResponse
     public decimal TotalAmount { get; init; }
 
     public PaymentMethod PaymentMethod { get; init; }
+
+    public DeliveryMethod DeliveryMethod { get; init; }
 
     public bool CanPlaceOrder { get; init; }
 

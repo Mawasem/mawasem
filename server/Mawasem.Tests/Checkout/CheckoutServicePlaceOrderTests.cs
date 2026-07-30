@@ -111,6 +111,117 @@ public sealed class CheckoutServicePlaceOrderTests
     }
 
     [Fact]
+    public async Task PlaceOrderAsync_StorePickup_CreatesOrderWithoutShipping()
+    {
+        await using var database =
+            new CheckoutTestDatabase();
+
+        await database.SeedAsync(
+            new CheckoutSeedOptions
+            {
+                DeliveryAreaActive =
+                    false
+            });
+
+        int createdOrderId;
+
+        await using (
+            var dbContext =
+                database.CreateContext() )
+        {
+            var request =
+                CreateRequest(
+                    "store-pickup") with
+                {
+                    DeliveryMethod =
+                        DeliveryMethod.StorePickup ,
+
+                    UserAddressId =
+                        null
+                };
+
+            var result =
+                await CreateService(dbContext)
+                    .PlaceOrderAsync(
+                        CheckoutTestDatabase.CustomerId ,
+                        request);
+
+            Assert.True(result.Succeeded);
+            Assert.NotNull(result.Response);
+
+            Assert.Equal(
+                DeliveryMethod.StorePickup ,
+                result.Response.DeliveryMethod);
+
+            Assert.Equal(
+                0m ,
+                result.Response.DeliveryFee);
+
+            Assert.Equal(
+                result.Response.SubTotal ,
+                result.Response.TotalAmount);
+
+            createdOrderId =
+                result.Response.OrderId;
+        }
+
+        await using var verificationContext =
+            database.CreateContext();
+
+        var order =
+            await verificationContext.Orders
+                .SingleAsync(candidate =>
+                    candidate.Id == createdOrderId);
+
+        Assert.Equal(
+            DeliveryMethod.StorePickup ,
+            order.DeliveryMethod);
+
+        Assert.Equal(
+            0m ,
+            order.DeliveryFee);
+
+        Assert.Null(
+            order.UserAddressId);
+
+        Assert.Null(
+            order.ShippingDeliveryAreaId);
+
+        Assert.Null(
+            order.ShippingRecipientName);
+
+        Assert.Null(
+            order.ShippingRecipientPhone);
+
+        Assert.Null(
+            order.ShippingCity);
+
+        Assert.Null(
+            order.ShippingAreaName);
+
+        Assert.Null(
+            order.ShippingDetailedAddress);
+
+        Assert.Null(
+            order.ShippingBuildingNumber);
+
+        Assert.Null(
+            order.ShippingFloorNumber);
+
+        Assert.Null(
+            order.ShippingApartmentNumber);
+
+        Assert.Null(
+            order.ShippingLandmark);
+
+        Assert.Null(
+            order.ShippingDeliveryAreaNameAr);
+
+        Assert.Null(
+            order.ShippingDeliveryAreaNameEn);
+    }
+
+    [Fact]
     public async Task PlaceOrderAsync_Success_DeductsStockAndClearsCart()
     {
         await using var database =
@@ -581,6 +692,9 @@ public sealed class CheckoutServicePlaceOrderTests
         {
             UserAddressId =
                 CheckoutTestDatabase.AddressId ,
+
+            DeliveryMethod =
+                DeliveryMethod.HomeDelivery ,
 
             PaymentMethod =
                 PaymentMethod.CashOnDelivery ,

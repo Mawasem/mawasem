@@ -122,6 +122,7 @@
       "description": "Complete order, customer, shipping, item, and payment information.",
       "customer": "Customer",
       "shipping": "Shipping",
+      "noDeliveryAddress": "Store pickup orders do not have a delivery address.",
       "orderInfo": "Order information",
       "items": "Order items",
       "totals": "Order totals"

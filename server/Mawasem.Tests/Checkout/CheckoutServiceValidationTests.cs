@@ -48,6 +48,10 @@ public sealed class CheckoutServiceValidationTests
         Assert.True(
             result.Response.CanPlaceOrder);
 
+        Assert.Equal(
+            DeliveryMethod.HomeDelivery ,
+            result.Response.DeliveryMethod);
+
         Assert.Empty(
             result.Response.Warnings);
 
@@ -74,6 +78,119 @@ public sealed class CheckoutServiceValidationTests
         Assert.Equal(
             200m ,
             item.LineTotal);
+    }
+
+    [Fact]
+    public async Task PreviewAsync_HomeDeliveryWithoutAddress_IsRejected()
+    {
+        await using var database =
+            new CheckoutTestDatabase();
+
+        await database.SeedAsync();
+
+        await using var dbContext =
+            database.CreateContext();
+
+        var result =
+            await CreateService(dbContext)
+                .PreviewAsync(
+                    CheckoutTestDatabase.CustomerId ,
+                    new CheckoutPreviewRequest
+                    {
+                        DeliveryMethod =
+                            DeliveryMethod.HomeDelivery ,
+
+                        UserAddressId =
+                            null
+                    });
+
+        Assert.False(result.Succeeded);
+
+        Assert.Equal(
+            CheckoutErrorCodes.AddressRequired ,
+            result.ErrorCode);
+    }
+
+    [Fact]
+    public async Task PreviewAsync_StorePickupWithoutAddress_ReturnsZeroDeliveryFee()
+    {
+        await using var database =
+            new CheckoutTestDatabase();
+
+        await database.SeedAsync(
+            new CheckoutSeedOptions
+            {
+                DeliveryAreaActive =
+                    false
+            });
+
+        await using var dbContext =
+            database.CreateContext();
+
+        var result =
+            await CreateService(dbContext)
+                .PreviewAsync(
+                    CheckoutTestDatabase.CustomerId ,
+                    new CheckoutPreviewRequest
+                    {
+                        DeliveryMethod =
+                            DeliveryMethod.StorePickup ,
+
+                        UserAddressId =
+                            null
+                    });
+
+        Assert.True(result.Succeeded);
+        Assert.NotNull(result.Response);
+
+        Assert.Equal(
+            DeliveryMethod.StorePickup ,
+            result.Response.DeliveryMethod);
+
+        Assert.Null(
+            result.Response.UserAddressId);
+
+        Assert.Null(
+            result.Response.DeliveryAreaId);
+
+        Assert.Equal(
+            0m ,
+            result.Response.DeliveryFee);
+
+        Assert.Equal(
+            result.Response.SubTotal ,
+            result.Response.TotalAmount);
+    }
+
+    [Fact]
+    public async Task PreviewAsync_InvalidDeliveryMethod_IsRejected()
+    {
+        await using var database =
+            new CheckoutTestDatabase();
+
+        await database.SeedAsync();
+
+        await using var dbContext =
+            database.CreateContext();
+
+        var result =
+            await CreateService(dbContext)
+                .PreviewAsync(
+                    CheckoutTestDatabase.CustomerId ,
+                    new CheckoutPreviewRequest
+                    {
+                        DeliveryMethod =
+                            (DeliveryMethod)999 ,
+
+                        UserAddressId =
+                            null
+                    });
+
+        Assert.False(result.Succeeded);
+
+        Assert.Equal(
+            CheckoutErrorCodes.InvalidDeliveryMethod ,
+            result.ErrorCode);
     }
 
     [Fact]
@@ -522,6 +639,9 @@ public sealed class CheckoutServiceValidationTests
         {
             UserAddressId =
                 CheckoutTestDatabase.AddressId ,
+
+            DeliveryMethod =
+                DeliveryMethod.HomeDelivery ,
 
             PaymentMethod =
                 PaymentMethod.CashOnDelivery
