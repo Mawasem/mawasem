@@ -75,7 +75,6 @@ public sealed partial class CheckoutService
                     await LoadCheckoutContextAsync(
                         userId ,
                         request.UserAddressId ,
-                        request.DeliveryMethod ,
                         request.PaymentMethod ,
                         trackEntities: true ,
                         cancellationToken);

@@ -34,7 +34,7 @@ export function NavbarActions({
       </Button>
 
       <ModeToggle />
-
+      
       <NavbarIconLink
         to="/cart"
         label="Shopping cart"

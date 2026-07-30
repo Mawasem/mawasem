@@ -1,3 +1,7 @@
+import { zodResolver } from "@hookform/resolvers/zod"
+import { LoaderCircle } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import {
   Field,
@@ -6,17 +10,12 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { getApiErrorMessage } from "@/lib/get-api-error-message"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { LoaderCircle } from "lucide-react"
-import { useForm } from "react-hook-form"
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom"
 import { useVerifyCustomerPasswordResetCode } from "../hooks/use-verify-customer-password-reset-code"
 import {
   verifyResetCodeSchema,
   type VerifyResetCodeFormValues,
 } from "../schemas/password-reset-schemas"
-
+import { getApiErrorMessage } from "@/lib/get-api-error-message"
 export default function VerifyResetCodePage() {
   const [params] = useSearchParams()
   const phoneNumber = params.get("phone") ?? ""
@@ -26,9 +25,7 @@ export default function VerifyResetCodePage() {
     resolver: zodResolver(verifyResetCodeSchema),
     defaultValues: { phoneNumber, code: "" },
   })
-
   if (!phoneNumber) return <Navigate to="/auth/forgot-password" replace />
-
   const onSubmit = async (values: VerifyResetCodeFormValues) => {
     try {
       const result = await mutation.verifyCodeAsync(values)
@@ -39,7 +36,6 @@ export default function VerifyResetCodePage() {
       //
     }
   }
-
   return (
     <form
       className="flex flex-col gap-6"

@@ -2,11 +2,11 @@ import { Link, useNavigate } from "react-router-dom"
 
 import { useLogoutCustomer } from "@/features/auth/hooks/use-logout-customer"
 import { useCustomerAuthStore } from "@/features/auth/store/use-customer-auth-store"
-import { useCart } from "@/features/cart/hooks/use-cart"
 
 import { NavbarActions } from "./navbar/navbar-actions"
 import { NavbarDesktopNavigation } from "./navbar/navbar-desktop-navigation"
 import { NavbarMobileNavigation } from "./navbar/navbar-mobile-navigation"
+import { NavbarSearch } from "./navbar/navbar-search"
 import { getInitials } from "./navbar/navbar-utils"
 
 interface StoreNavbarProps {
@@ -22,7 +22,6 @@ export default function StoreNavbar({
   const status = useCustomerAuthStore((state) => state.status)
   const customer = useCustomerAuthStore((state) => state.user)
   const logoutMutation = useLogoutCustomer()
-  const { cartData } = useCart()
 
   const isAuthenticated = status === "authenticated"
   const customerName =
@@ -60,10 +59,11 @@ export default function StoreNavbar({
         </Link>
 
         <NavbarDesktopNavigation />
+        <NavbarSearch />
 
         <NavbarActions
           {...accountProps}
-          cartCount={cartData?.totalQuantity ?? cartCount}
+          cartCount={cartCount}
           wishlistCount={wishlistCount}
         />
       </div>

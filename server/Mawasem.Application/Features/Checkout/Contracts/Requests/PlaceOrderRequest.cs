@@ -4,10 +4,7 @@ namespace Mawasem.Application.Features.Checkout.Contracts.Requests;
 
 public sealed record PlaceOrderRequest
 {
-    public int? UserAddressId { get; init; }
-
-    public DeliveryMethod DeliveryMethod { get; init; } =
-        DeliveryMethod.HomeDelivery;
+    public int UserAddressId { get; init; }
 
     public PaymentMethod PaymentMethod { get; init; } =
         PaymentMethod.CashOnDelivery;
