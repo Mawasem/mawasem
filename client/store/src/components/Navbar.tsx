@@ -40,7 +40,7 @@ export default function StoreNavbar({
   async function handleLogout() {
     try {
       await logoutMutation.logoutAsync()
-      navigate("/", { replace: true })
+      navigate("/auth/login", { replace: true })
     } catch {
       // The mutation retains the error state for the calling UI.
     }
