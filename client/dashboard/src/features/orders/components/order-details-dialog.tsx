@@ -22,7 +22,7 @@ import {
   getPaymentMethodKey,
   getPaymentStatusKey,
 } from "../order-utils";
-import { DeliveryMethod, type AdminOrderListItem } from "../types";
+import type { AdminOrderListItem } from "../types";
 import { OrderStatusBadge } from "./order-status-badge";
 
 interface Props {
@@ -35,8 +35,6 @@ export function OrderDetailsDialog({ order, open, onOpenChange }: Props) {
   const { t, i18n } = useTranslation();
   const { orderData, isLoading, error } = useAdminOrder(order.id, open);
   const language = i18n.resolvedLanguage ?? "en";
-  const isStorePickup =
-    orderData?.deliveryMethod === DeliveryMethod.StorePickup;
 
   const localized = (ar?: string | null, en?: string | null) =>
     language === "ar" ? ar || en || "-" : en || ar || "-";
@@ -89,36 +87,21 @@ export function OrderDetailsDialog({ order, open, onOpenChange }: Props) {
               </Card>
 
               <Card>
-                <CardHeader className="flex-row items-center justify-between">
-                  <CardTitle>{t("orders.details.shipping")}</CardTitle>
-                  {isStorePickup ? (
-                    <Badge variant="secondary">
-                      {t("orders.deliveryMethod.store_pickup")}
-                    </Badge>
-                  ) : null}
-                </CardHeader>
+                <CardHeader><CardTitle>{t("orders.details.shipping")}</CardTitle></CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   <DetailRow label={t("orders.fields.deliveryMethod")} value={t(`orders.deliveryMethod.${getDeliveryMethodKey(orderData.deliveryMethod)}`)} />
-                  {isStorePickup ? (
-                    <p className="rounded-md bg-muted p-3 text-muted-foreground">
-                      {t("orders.details.noDeliveryAddress")}
-                    </p>
-                  ) : (
-                    <>
-                      <DetailRow label={t("orders.fields.deliveryArea")} value={localized(orderData.shipping.deliveryAreaNameAr, orderData.shipping.deliveryAreaNameEn)} />
-                      <DetailRow label={t("orders.fields.recipient")} value={orderData.shipping.recipientName ?? "-"} />
-                      <DetailRow label={t("orders.fields.phone")} value={orderData.shipping.recipientPhone ?? "-"} />
-                      <DetailRow label={t("orders.fields.address")} value={[
-                        orderData.shipping.city,
-                        orderData.shipping.areaName,
-                        orderData.shipping.detailedAddress,
-                        orderData.shipping.buildingNumber && `${t("orders.fields.building")}: ${orderData.shipping.buildingNumber}`,
-                        orderData.shipping.floorNumber && `${t("orders.fields.floor")}: ${orderData.shipping.floorNumber}`,
-                        orderData.shipping.apartmentNumber && `${t("orders.fields.apartment")}: ${orderData.shipping.apartmentNumber}`,
-                      ].filter(Boolean).join(" - ") || "-"} />
-                      <DetailRow label={t("orders.fields.landmark")} value={orderData.shipping.landmark ?? "-"} />
-                    </>
-                  )}
+                  <DetailRow label={t("orders.fields.deliveryArea")} value={localized(orderData.shipping.deliveryAreaNameAr, orderData.shipping.deliveryAreaNameEn)} />
+                  <DetailRow label={t("orders.fields.recipient")} value={orderData.shipping.recipientName ?? "-"} />
+                  <DetailRow label={t("orders.fields.phone")} value={orderData.shipping.recipientPhone ?? "-"} />
+                  <DetailRow label={t("orders.fields.address")} value={[
+                    orderData.shipping.city,
+                    orderData.shipping.areaName,
+                    orderData.shipping.detailedAddress,
+                    orderData.shipping.buildingNumber && `${t("orders.fields.building")}: ${orderData.shipping.buildingNumber}`,
+                    orderData.shipping.floorNumber && `${t("orders.fields.floor")}: ${orderData.shipping.floorNumber}`,
+                    orderData.shipping.apartmentNumber && `${t("orders.fields.apartment")}: ${orderData.shipping.apartmentNumber}`,
+                  ].filter(Boolean).join(" - ") || "-"} />
+                  <DetailRow label={t("orders.fields.landmark")} value={orderData.shipping.landmark ?? "-"} />
                 </CardContent>
               </Card>
             </div>

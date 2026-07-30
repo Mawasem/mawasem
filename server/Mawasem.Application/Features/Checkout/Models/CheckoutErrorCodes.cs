@@ -23,12 +23,6 @@ public static class CheckoutErrorCodes
     public const string InsufficientStock =
         "checkout.insufficient_stock";
 
-    public const string InvalidDeliveryMethod =
-        "checkout.invalid_delivery_method";
-
-    public const string AddressRequired =
-        "checkout.address_required";
-
     public const string AddressNotFound =
         "checkout.address_not_found";
 
