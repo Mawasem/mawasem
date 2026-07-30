@@ -1,6 +1,6 @@
-import Footer from "@/components/Footer";
-import StoreNavbar from "@/components/Navbar";
-import { Outlet } from "react-router-dom";
+import Footer from "@/components/Footer"
+import StoreNavbar from "@/components/Navbar"
+import { Outlet } from "react-router-dom"
 
 export default function StoreLayout() {
   return (
@@ -15,5 +15,5 @@ export default function StoreLayout() {
 
       <Footer />
     </div>
-  );
+  )
 }

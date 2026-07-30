@@ -1,9 +1,11 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { mergeGuestCartAfterAuthentication } from "@/features/cart/services/merge-guest-cart-after-auth"
 
 import { registerCustomer } from "../api/register-customer"
 import { useCustomerAuthStore } from "../store/use-customer-auth-store"
 
 export function useRegisterCustomer() {
+  const queryClient = useQueryClient()
   const setSession = useCustomerAuthStore((state) => state.setSession)
 
   const {
@@ -13,7 +15,10 @@ export function useRegisterCustomer() {
     error,
   } = useMutation({
     mutationFn: registerCustomer,
-    onSuccess: setSession,
+    onSuccess: async (session) => {
+      setSession(session)
+      await mergeGuestCartAfterAuthentication(queryClient)
+    },
   })
 
   return {
